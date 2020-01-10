@@ -142,11 +142,11 @@
         parseEl: function(c) {
             var d, e = b.items[c];
             if (e.tagName ? e = {
-                    el: a(e)
-                } : (d = e.type, e = {
-                    data: e,
-                    src: e.src
-                }), e.el) {
+                el: a(e)
+            } : (d = e.type, e = {
+                data: e,
+                src: e.src
+            }), e.el) {
                 for (var f = b.types, g = 0; g < f.length; g++)
                     if (e.el.hasClass("mfp-" + f[g])) {
                         d = f[g];
@@ -1006,53 +1006,53 @@ jQuery(document).ready(function() {
                 },
                 image: {
                     markup: '' +
-                    '<div class="mfp-figure"><div class="mfp-close">X</div>'+
-                    '<div class="fts-popup-wrap">' +
-                    '    <div class="fts-popup-half ">' +
-                    '               <button title="previous" type="button" id="fts-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>' +
-                    '           <div class="fts-popup-image-position" style="height:591px;">' +
-                    '                   <span class="fts-position-helper"></span><div class="mfp-img"></div>' +
-                    '       </div>' +
-                    '               <button title="next" type="button" id="fts-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>' +
-                    '    </div>'+
-                    '<div class="fts-popup-second-half">' +
-                    '<div class="mfp-bottom-bar">'+
-                    '<div class="mfp-title"></div>' +
-                    '<a class="fts-powered-by-text" href="https://www.slickremix.com" target="_blank">Powered by Feed Them Social</a>'+
-                    '<div class="mfp-counter"></div>'+
-                    '</div>' +
-                    '</div>' +
-                    '</div>'+
-                    '</div>', // Popup HTML markup. `.mfp-img` div will be replaced with img tag, `.mfp-close` by close button
+                        '<div class="mfp-figure"><div class="mfp-close">X</div>'+
+                        '<div class="fts-popup-wrap">' +
+                        '    <div class="fts-popup-half ">' +
+                        '               <button title="previous" type="button" id="fts-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>' +
+                        '           <div class="fts-popup-image-position" style="height:591px;">' +
+                        '                   <span class="fts-position-helper"></span><div class="mfp-img"></div>' +
+                        '       </div>' +
+                        '               <button title="next" type="button" id="fts-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>' +
+                        '    </div>'+
+                        '<div class="fts-popup-second-half">' +
+                        '<div class="mfp-bottom-bar">'+
+                        '<div class="mfp-title"></div>' +
+                        '<a class="fts-powered-by-text" href="https://www.slickremix.com" target="_blank">Powered by Feed Them Social</a>'+
+                        '<div class="mfp-counter"></div>'+
+                        '</div>' +
+                        '</div>' +
+                        '</div>'+
+                        '</div>', // Popup HTML markup. `.mfp-img` div will be replaced with img tag, `.mfp-close` by close button
 
                     tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
 
                 },
                 iframe: {
                     markup: '' +
-                    '<div class="mfp-figure"><div class="mfp-close">X</div>'+
-                    '<div class="fts-popup-wrap">' +
-                    '    <div class="fts-popup-half ">' +
-                    '               <button title="previous" type="button" id="fts-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>' +
-                    '           <div class="fts-popup-image-position">' +
-                    '<div class="fts-fb-embed-iframe-check-used-for-popup"></div>' +
-                    '                           <div class="mfp-iframe-scaler"><iframe class="mfp-iframe fts-iframe-popup-element" align="middle" frameborder="0" allowTransparency="true" allow="encrypted-media" allowFullScreen="true"></iframe>' +
-                    '                           </div>' +
-                    '               <button title="next" type="button" id="fts-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>' +
-                    '<script>' +
-                    // SLICKREMIX: MUST HAVE THIS IN PLACE TO BE ABLE TO CHECK WHAT KIND OF VIDEOS ARE BEING CLICKED ON WHEN FIRST LOADED, AFTER THEY ARE LOADED REFER TO THE CLICK FUNCTION FOR THE ERRORS ABOVE
-                    'if(jQuery("body").hasClass("fts-video-iframe-choice")){jQuery(".fts-iframe-popup-element").attr("src", "").hide(); } else if(!jQuery("body").hasClass("fts-using-arrows")){jQuery(".fts-video-popup-element").attr("src", "").hide(); }  jQuery(".fts-facebook-popup video").click(function(){jQuery(this).trigger(this.paused ? this.paused ? "play" : "play" : "pause")}); </script>' +
-                    '       </div>' +
-                    '    </div>'+
-                    '<div class="fts-popup-second-half">' +
-                    '<div class="mfp-bottom-bar">'+
-                    '<div class="mfp-title"></div>' +
-                    '<a class="fts-powered-by-text" href="https://www.slickremix.com" target="_blank">Powered by Feed Them Social</a>'+
-                    '<div class="mfp-counter"></div>'+
-                    '</div>' +
-                    '</div>' +
-                    '</div>'+
-                    '</div>', // Popup HTML markup. `.mfp-img` div will be replaced with img tag, `.mfp-close` by close button
+                        '<div class="mfp-figure"><div class="mfp-close">X</div>'+
+                        '<div class="fts-popup-wrap">' +
+                        '    <div class="fts-popup-half ">' +
+                        '               <button title="previous" type="button" id="fts-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>' +
+                        '           <div class="fts-popup-image-position">' +
+                        '<div class="fts-fb-embed-iframe-check-used-for-popup"></div>' +
+                        '                           <div class="mfp-iframe-scaler"><iframe class="mfp-iframe fts-iframe-popup-element" align="middle" frameborder="0" allowTransparency="true" allow="encrypted-media" allowFullScreen="true"></iframe>' +
+                        '                           </div>' +
+                        '               <button title="next" type="button" id="fts-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>' +
+                        '<script>' +
+                        // SLICKREMIX: MUST HAVE THIS IN PLACE TO BE ABLE TO CHECK WHAT KIND OF VIDEOS ARE BEING CLICKED ON WHEN FIRST LOADED, AFTER THEY ARE LOADED REFER TO THE CLICK FUNCTION FOR THE ERRORS ABOVE
+                        'if(jQuery("body").hasClass("fts-video-iframe-choice")){jQuery(".fts-iframe-popup-element").attr("src", "").hide(); } else if(!jQuery("body").hasClass("fts-using-arrows")){jQuery(".fts-video-popup-element").attr("src", "").hide(); }  jQuery(".fts-facebook-popup video").click(function(){jQuery(this).trigger(this.paused ? this.paused ? "play" : "play" : "pause")}); </script>' +
+                        '       </div>' +
+                        '    </div>'+
+                        '<div class="fts-popup-second-half">' +
+                        '<div class="mfp-bottom-bar">'+
+                        '<div class="mfp-title"></div>' +
+                        '<a class="fts-powered-by-text" href="https://www.slickremix.com" target="_blank">Powered by Feed Them Social</a>'+
+                        '<div class="mfp-counter"></div>'+
+                        '</div>' +
+                        '</div>' +
+                        '</div>'+
+                        '</div>', // Popup HTML markup. `.mfp-img` div will be replaced with img tag, `.mfp-close` by close button
 
                     srcAction: 'iframe_src' // Templating object key. First part defines CSS selector, second attribute. "iframe_src" means: find "iframe" and set attribute "src".  
                 }
@@ -1072,11 +1072,21 @@ jQuery(document).ready(function() {
                 s = [];
             t.each(function() {
                 var e = jQuery(this);
+
+                if (e.hasClass("fts-child-media")) {
+                    ic = jQuery(this).parents(".fts-instagram-wrapper").find(".fts-carousel-image-wrapper").html();
+                    ivc = '<div class="fts-carousel-image"></div>';
+                }
+                else{
+                    ic = '';
+                    ivc = '';
+                }
+
                 if (e.hasClass("fts-jal-fb-vid-image")) t = "iframe";
                 else if (e.hasClass("fts-instagram-video-link")) t = "inline";
                 else var t = "image";
                 if ("inline" == t) var o = "",
-                    p = '<video controls width="100%;" style="max-width:100%;" allowfullscreen  controls><source src="' + e.attr("href") + '" type="video/mp4"></video><script>jQuery(".fts-instagram-styles-popup video").get(0).play();jQuery(".fts-instagram-styles-popup video").click(function(){ jQuery(this).trigger(this.paused ? this.paused ? "play" : "play" : "pause") });</script>';
+                    p = ivc +'<video controls width="100%;" style="max-width:100%;" allowfullscreen controls><source src="' + e.attr("href") + '" type="video/mp4"></video><script>jQuery(".fts-instagram-styles-popup video").get(0).play();jQuery(".fts-instagram-styles-popup video").click(function(){ jQuery(this).trigger(this.paused ? this.paused ? "play" : "play" : "pause") });</script>';
                 else var o = e.attr("href"),
                     p = "";
                 var i = {
@@ -1084,9 +1094,9 @@ jQuery(document).ready(function() {
                     type: t,
                     html5videolink: p
                 };
-                i.title = jQuery(this).parents(".fts-instagram-wrapper").find(".fts-instagram-popup-profile-wrap").html() + jQuery(this).parents(".fts-instagram-wrapper").find(".slicker-date").html() + jQuery(this).parents(".fts-instagram-wrapper").find(".fts-insta-likes-comments-grab-popup").html() + jQuery(this).parents(".fts-instagram-wrapper").find(".fts-instagram-caption").html(), s.push(i)
+                i.title =  ic + jQuery(this).parents(".fts-instagram-wrapper").find(".fts-instagram-popup-profile-wrap").html() + jQuery(this).parents(".fts-instagram-wrapper").find(".slicker-date").html() + jQuery(this).parents(".fts-instagram-wrapper").find(".fts-insta-likes-comments-grab-popup").html() + jQuery(this).parents(".fts-instagram-wrapper").find(".fts-instagram-caption").html(), s.push(i)
             }), t.magnificPopup({
-                mainClass: "fts-facebook-popup fts-instagram-styles-popup",
+                mainClass: 'fts-facebook-popup fts-instagram-styles-popup',
                 items: s,
                 removalDelay: 150,
                 preloader: !1,
@@ -1113,10 +1123,31 @@ jQuery(document).ready(function() {
                         }), jQuery(window).trigger("resize")
                     },
                     change: function() {
-                        console.log("Content changed"), console.log(this.content), jQuery.fn.ftsShare(), jQuery("body").hasClass("fts-using-arrows")
+                        console.log("Content changed"), console.log(this.content), jQuery.fn.ftsShare(), jQuery("body").hasClass("fts-using-arrows");
+
                     },
                     imageLoadComplete: function() {
+                        //Check to see if it's a carousel image or video append the icon to show the image is part of a carousel album.
+                        if( jQuery( ".fts-instagram-popup-second-half .fts-carousel-image" ).length ) {
+                            jQuery(".fts-instagram-styles-popup .fts-carousel-image").remove();
+                            jQuery(".fts-instagram-popup-half").prepend("<div class='fts-carousel-image'></div>");
+                        }
+                        else {
+                            jQuery(".fts-instagram-styles-popup .fts-carousel-image").remove();
+                        }
+
                         jQuery.fn.ftsShare(), jQuery(".fts-popup-image-position, .fts-popup-second-half .mfp-bottom-bar").height() < jQuery(".mfp-img").height() ? jQuery(".fts-popup-image-position, .fts-popup-second-half .mfp-bottom-bar").css("height", jQuery(".mfp-img").height()) : jQuery(".fts-popup-second-half .mfp-bottom-bar").css("height", jQuery(".fts-popup-image-position").height())
+                    },
+                    beforeAppend: function() {
+                        // jQuery(".fts-instagram-styles-popup .fts-carousel-image").remove();
+                        jQuery(".fts-instagram-popup-half").prepend("<div class='fts-carousel-image'></div>");
+                        //Check to see if it's a carousel image or video append the icon to show the image is part of a carousel album.
+                        if( jQuery( ".fts-instagram-popup-second-half .fts-carousel-image" ).length ) {
+                            alert('wtg')
+                        }
+                        else {
+                            // jQuery(".fts-instagram-styles-popup .fts-carousel-image").remove();
+                        }
                     },
                     markupParse: function(e, t, s) {
                         console.log("Parsing:", e, t, s)
@@ -1129,7 +1160,7 @@ jQuery(document).ready(function() {
                     markup: '<div class="mfp-figure"><div class="mfp-close">X</div><div class="fts-popup-wrap">    <div class="fts-popup-half fts-instagram-popup-half">               <button title="previous" type="button" id="fts-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>           <div class="fts-popup-image-position">                           <div class="mfp-iframe-scaler mfp-html5videolink" id="fts-html5videolink">                           </div>               <button title="next" type="button" id="fts-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>       </div>    </div><div class="fts-popup-second-half fts-instagram-popup-second-half"><div class="mfp-bottom-bar"><div class="mfp-title"></div><a class="fts-powered-by-text" href="https://slickremix.com" target="_blank">Powered by Feed Them Social</a><div class="mfp-counter"></div></div></div></div></div>'
                 },
                 image: {
-                    markup: '<div class="mfp-figure"><div class="mfp-close">X</div><div class="fts-popup-wrap">    <div class="fts-popup-half fts-instagram-popup-half">               <button title="previous" type="button" id="fts-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>           <div class="fts-popup-image-position">                   <span class="fts-position-helper"></span><div class="mfp-img"></div>       </div>               <button title="next" type="button" id="fts-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>    </div><div class="fts-popup-second-half fts-instagram-popup-second-half"><div class="mfp-bottom-bar"><div class="mfp-title"></div><a class="fts-powered-by-text" href="https://feedthemsocial.com" target="_blank">Powered by Feed Them Social</a><div class="mfp-counter"></div></div></div></div></div>',
+                    markup: '><div class="mfp-figure"><div class="mfp-close">X</div><div class="fts-popup-wrap">    <div class="fts-popup-half fts-instagram-popup-half">              <button title="previous" type="button" id="fts-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>           <div class="fts-popup-image-position">    <span class="fts-position-helper"></span><div class="mfp-img"></div>       </div>               <button title="next" type="button" id="fts-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>    </div><div class="fts-popup-second-half fts-instagram-popup-second-half"><div class="mfp-bottom-bar"><div class="mfp-title"></div><a class="fts-powered-by-text" href="https://feedthemsocial.com" target="_blank">Powered by Feed Them Social</a><div class="mfp-counter"></div></div></div></div></div>',
                     tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
                 },
                 iframe: {
