@@ -9,7 +9,7 @@
  * @author   SlickRemix
  */
 
-namespace feed_them_social;
+namespace feedthemsocial;
 
 // Exit if accessed directly!
 if ( ! defined( 'ABSPATH' ) ) {
@@ -52,7 +52,7 @@ class Gallery {
 	 * ZIP Gallery Class
 	 * initiates ZIP Gallery Class
 	 *
-	 * @var \feed_them_social\Zip_Gallery|string
+	 * @var string
 	 */
 	public $zip_gallery_class = '';
 
@@ -60,7 +60,7 @@ class Gallery {
 	 * Gallery Options
 	 * initiates Gallery Options Class
 	 *
-	 * @var \feed_them_social\Zip_Gallery|string
+	 * @var string
 	 */
 	public $gallery_options_class = '';
 
@@ -68,7 +68,7 @@ class Gallery {
 	 * Metabox Settings Class
 	 * initiates Metabox Settings Class
 	 *
-	 * @var \feed_them_social\Metabox_Settings|string
+	 * @var string
 	 */
 	public $metabox_settings_class = '';
 
@@ -1778,170 +1778,14 @@ class Gallery {
 					// echo '<pre>';
 					// print_r(wp_prepare_attachment_for_js('21529'));
 					// echo '</pre>';
-					echo $gallery_class->metabox_settings_class->settings_html_form( $gallery_class->saved_settings_array['woocommerce'], null, $gallery_class->parent_post_id );
+					echo $gallery_class->metabox_settings_class->settings_html_form( $gallery_class->saved_settings_array['twitter'], null, $gallery_class->parent_post_id );
 					?>
 
 				<div class="tab-5-extra-options">
 
-					<div class="feed_them_social-admin-input-wrap ftg-global-model-product-wrap">
-						<div class="feed_them_social-admin-input-label"><?php esc_html_e( 'Global Model Product', 'feed_them_social' ); ?></div>
-			<?php
-			if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) {
-				$gallery_to_woo_class = new Gallery_to_Woocommerce();
-				echo $gallery_to_woo_class->fts_image_to_woo_model_prod_select( $gallery_class->parent_post_id, 'global' );
-			} else {
-				$ftg_prem_not_active = '<select disabled="" class="feed_them_social-admin-input"><option value="" selected="selected">Premium Required</option></select>';
-				echo $ftg_prem_not_active;
-			}
-			?>
-						<div class="ftg-js-edit-button-holder"></div>
-						<br/>
-						<span class="tab-section-description"><small><?php esc_html_e( 'The selected WooCommerce product will be duplicated when creating products for each image in this gallery. 1 image will produce 1 WooCommerce product. This helps save time when creating variable products. Example: Printable images that have different print sizes, material, etc. This will override the "Smart Image Orientation" options below.', 'feed_them_social' ); ?></small></span>
-						<span class="tab-section-description"><a href="https://docs.woocommerce.com/document/variable-product/" target="_blank"><small>
-							<?php
-							echo sprintf(
-								esc_html__( 'Learn how to create a %1$sVariable product%2$s in WooCommerce.', 'feed_them_social' ),
-								'<strong>',
-								'</strong>'
-							);
-							?>
-									</small></a> </span>
-						<div class="ftg-settings-overlay"></div>
-					</div>
-
-					<div class="feed_them_social-admin-input-wrap"
-						 style="border: none; padding-bottom:0px;">
-						<div class="feed_them_social-admin-input-label"><?php esc_html_e( 'Use Smart Image Orientation', 'feed_them_social' ); ?></div>
-									<?php
-									if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) {
-										?>
-							<div class="fts_smart_image_orient_prod_holder"></div>
-										<?php
-									} else {
-										$ftg_prem_not_active_checkbox = '<input disabled type="checkbox" id="fts_smart_image_orient_prod" name="fts_smart_image_orient_prod">';
-										echo $ftg_prem_not_active_checkbox;
-									}
-									?>
-						<span class="tab-section-description"><small><?php esc_html_e( 'Checking this option will automatically determine the images orientation and match it to the appropriate Model Product (Landscape, Square or Portrait) when creating a WooCommerce product for each image. Check this option and then choose a "Smart Image Orientation Model Product" below. This will override the "Global Model Product" option for this Gallery.', 'feed_them_social' ); ?></small></span>
-
-						<div class="ftg-settings-overlay-smart-images"></div>
-					</div>
-
-					<div class="feed_them_social-admin-input-wrap ftg-smart-images-wrapper">
-
-						<div class="feed_them_social-admin-input-label"><?php esc_html_e( 'Smart Image Orientation Model Products', 'feed_them_social' ); ?></div>
-						<br/>
-
-						<span class="tab-section-description"><small><?php esc_html_e( 'The selected WooCommerce product will be duplicated when creating products for Landscape Images (Greater width than height), Square Images (Equal width and height), and Portrait Images (Width less than height). 1 image will produce 1 WooCommerce product. You must have the "Use Smart Image Orientation" checked above for this option to work properly and you must choose a Model Product for the 3 selections below.', 'feed_them_social' ); ?></small></span>
-						<span class="tab-section-description"><a
-									href="https://docs.woocommerce.com/document/variable-product/"
-									target="_blank"><small>
-							<?php
-							echo sprintf(
-								esc_html__( 'Learn how to create a %1$sVariable product%2$s in WooCommerce.', 'feed_them_social' ),
-								'<strong>',
-								'</strong>'
-							);
-							?>
-									</small></a> </span>
-
-						<div class="ftg-landscape-option-wrapper">
-							<div class="feed_them_social-admin-input-label"><?php esc_html_e( 'Landscape Image Model Product', 'feed_them_social' ); ?></div>
-										<?php
-										if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) {
-											$gallery_to_woo_class = new Gallery_to_Woocommerce();
-											echo $gallery_to_woo_class->fts_image_to_woo_model_prod_select( $gallery_class->parent_post_id, 'landscape' );
-										} else {
-											echo $ftg_prem_not_active;
-										}
-										?>
-							<div class="ftg-js-edit-button-holder-landscape"></div>
-						</div>
-
-						<div class="ftg-square-option-wrapper">
-							<div class="feed_them_social-admin-input-label"><?php esc_html_e( 'Square Image Model Product', 'feed_them_social' ); ?></div>
-							<?php
-							if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) {
-								$gallery_to_woo_class = new Gallery_to_Woocommerce();
-								echo $gallery_to_woo_class->fts_image_to_woo_model_prod_select( $gallery_class->parent_post_id, 'square' );
-							} else {
-								echo $ftg_prem_not_active;
-							}
-							?>
-							<div class="ftg-js-edit-button-holder-square"></div>
-						</div>
-						<div class="ftg-portrait-option-wrapper">
-							<div class="feed_them_social-admin-input-label"><?php esc_html_e( 'Portrait Image Model Product', 'feed_them_social' ); ?></div>
-							<?php
-							if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) {
-								$gallery_to_woo_class = new Gallery_to_Woocommerce();
-								echo $gallery_to_woo_class->fts_image_to_woo_model_prod_select( $gallery_class->parent_post_id, 'portrait' );
-							} else {
-								echo $ftg_prem_not_active;
-							}
-							?>
-							<div class="ftg-js-edit-button-holder-portrait"></div>
-						</div>
-						<div class="ftg-settings-overlay-smart-images"></div>
-					</div>
-
-					<div class="feed_them_social-admin-input-wrap ftg-zip-option-wrapper">
-						<div class="feed_them_social-admin-input-label"><?php esc_html_e( 'ZIP Model Product', 'feed_them_social' ); ?></div>
-						<?php
-						if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) {
-							echo $gallery_to_woo_class->fts_zip_to_woo_model_prod_select( $gallery_class->parent_post_id );
-						} else {
-							echo $ftg_prem_not_active;
-						}
-						?>
-
-						<div class="ftg-js-edit-button-holder-zip"></div>
-
-						<span class="tab-section-description"><small><?php esc_html_e( 'Select a Product that will be duplicated when creating a WooCommerce product for Gallery Digital ZIP. (Turns all images in Gallery into a ZIP for a Simple Virtual/Downloadable WooCommerce product.)', 'feed_them_social' ); ?></small></span>
-						<span class="tab-section-description"><a
-									href="https://docs.woocommerce.com/document/managing-products/#section-5"
-									target="_blank"><small>
-							 <?php
-								echo sprintf(
-									esc_html__( 'Learn how to create a %1$sSimple product%2$s in WooCommerce.', 'feed_them_social' ),
-									'<strong>',
-									'</strong>'
-								);
-								?>
-									</small></a> </span>
-						<span class="tab-section-description"><small>
-												<?php
-												echo sprintf(
-													esc_html__( 'NOTE: A Zip Model Product must have the options %1$sVirtual%2$s AND %3$sDownloadable%4$s checked to appear in ZIP Model Product select option above. No Download link is needed in product though as it will be auto-filled in when Feed Them Social creates a new ZIP product based on the ZIP\'s location.', 'feed_them_social' ),
-													'<a href="' . esc_url( 'https://docs.woocommerce.com/document/managing-products/#section-14' ) . '">',
-													'</a>',
-													'<a href="' . esc_url( 'https://docs.woocommerce.com/document/managing-products/#section-15' ) . '">',
-													'</a>'
-												);
-												?>
-											</small></span>
-					</div>
-
-					<div class="clear"></div>
-
-					<div class="ft-gallery-note ft-gallery-note-footer">
-								<?php
-								echo sprintf(
-									esc_html__( 'Additional Global WooCommerce options available on the %1$sSettings Page%2$s', 'feed_them_social' ),
-									'<a href="' . esc_url( 'edit.php?post_type=fts&page=ft-gallery-settings-page' ) . '" >',
-									'</a>'
-								);
-								?>
-				</div>
 			</div>
-		<?php if ( ! is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) { ?>
-			<script>
-				jQuery('#ftg-tab-content5 input, #ftg-tab-content5 select').attr('disabled', 'disabled');
-				jQuery('#ftg-tab-content5 input').val('Premium Required');
-				jQuery('#ftg-tab-content5 select option').text('Premium Required');
-			</script>
-			<?php
-}
+
+            <?php
 	}
 
 	/**
@@ -2754,7 +2598,7 @@ class Gallery {
 		//  }
 
 		if ( is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) {
-			include FEED_THEM_GALLERY_PREMIUM_PLUGIN_FOLDER_DIR . 'includes/watermark/save.php';
+			include FEED_THEM_SOCIAL_PREMIUM_PLUGIN_FOLDER_DIR . 'includes/watermark/save.php';
 		}
 		// end premium
 		// Return settings

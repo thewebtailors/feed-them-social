@@ -11,7 +11,7 @@
  * @author   SlickRemix
  */
 
-namespace feed_them_social;
+namespace feedthemsocial;
 
 /**
  * Class Settings_Page

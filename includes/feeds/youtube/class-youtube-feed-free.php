@@ -17,7 +17,7 @@ namespace feedthemsocial;
  *
  * @package feedthemsocial
  */
-class FTS_Youtube_Feed_Free extends feed_them_social_functions {
+class FTS_Youtube_Feed_Free extends FTS_Functions {
 
 	/**
 	 * Construct
@@ -38,13 +38,13 @@ class FTS_Youtube_Feed_Free extends feed_them_social_functions {
 	 * @since 2.3.2
 	 */
 	public function fts_youtube_head() {
-		wp_enqueue_style( 'fts-feeds', plugins_url( 'feed-them-social/feeds/css/styles.css' ), array(), FTS_CURRENT_VERSION, false );
+		wp_enqueue_style( 'fts-feeds', plugins_url( 'feed-them-social/includes/feeds/css/styles.css' ), array(), FTS_CURRENT_VERSION, false );
 		if ( is_plugin_active( 'feed-them-premium/feed-them-premium.php' ) ) {
 			$fts_fix_magnific = get_option( 'fts_fix_magnific' ) ? get_option( 'fts_fix_magnific' ) : '';
 			if ( isset( $fts_fix_magnific ) && '1' !== $fts_fix_magnific ) {
-				wp_enqueue_style( 'fts-popup', plugins_url( 'feed-them-social/feeds/css/magnific-popup.css' ), array(), FTS_CURRENT_VERSION, false );
+				wp_enqueue_style( 'fts-popup', plugins_url( 'feed-them-social/includes/feeds/css/magnific-popup.css' ), array(), FTS_CURRENT_VERSION, false );
 			}
-			wp_enqueue_script( 'fts-popup-js', plugins_url( 'feed-them-social/feeds/js/magnific-popup.js' ), array(), FTS_CURRENT_VERSION, false );
+			wp_enqueue_script( 'fts-popup-js', plugins_url( 'feed-them-social/includes/feeds/js/magnific-popup.js' ), array(), FTS_CURRENT_VERSION, false );
 		}
 	}
 
@@ -66,7 +66,7 @@ class FTS_Youtube_Feed_Free extends feed_them_social_functions {
 			$youtube_api_key      = get_option( 'youtube_custom_api_token' );
 			$youtube_access_token = get_option( 'youtube_custom_access_token' );
 
-			wp_enqueue_script( 'fts-global', plugins_url( 'feed-them-social/feeds/js/fts-global.js' ), array( 'jquery' ), FTS_CURRENT_VERSION, false );
+			wp_enqueue_script( 'fts-global', plugins_url( 'feed-them-social/includes/feeds/js/fts-global.js' ), array( 'jquery' ), FTS_CURRENT_VERSION, false );
 
 			$youtube_access_token_new = '';
 			if ( ! isset( $_GET['load_more_ajaxing'] ) && empty( $youtube_api_key ) && ! empty( $youtube_api_key ) ) {
@@ -165,7 +165,7 @@ class FTS_Youtube_Feed_Free extends feed_them_social_functions {
 
 				$youtube_show_follow_btn       = get_option( 'youtube_show_follow_btn' );
 				$youtube_show_follow_btn_where = get_option( 'youtube_show_follow_btn_where' );
-				$fts_functions_class           = new feed_them_social_functions();
+				$fts_functions_class           = new FTS_Functions();
 
 				$thumbs_play_iframe = $thumbs_play_in_iframe;
 

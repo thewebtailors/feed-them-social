@@ -11,7 +11,7 @@
  * @author   SlickRemix
  */
 
-namespace feed_them_social;
+namespace feedthemsocial;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -131,7 +131,7 @@ class Display_Gallery {
      */
     public function fts_head() {
 
-        wp_enqueue_style( 'ft-gallery-feeds', plugins_url( 'feed-them-social/includes/feeds/css/styles.css' ), array(), FTS_CURRENT_VERSION, false );
+        wp_enqueue_style( 'ft-gallery-feeds', plugins_url( 'feed-them-social/includes/cpt/css/styles.css' ), array(), FTS_CURRENT_VERSION, false );
         wp_enqueue_script( 'ft-masonry-pkgd', plugins_url( 'feed-them-social/includes/feeds/js/masonry.pkgd.min.js' ), array( 'jquery' ), FTS_CURRENT_VERSION, true );
         wp_enqueue_script( 'ft-images-loaded', plugins_url( 'feed-them-social/includes/feeds/js/imagesloaded.pkgd.min.js' ), array(), FTS_CURRENT_VERSION, true );
         wp_enqueue_script( 'ft-front-end-js', plugins_url( 'feed-them-social/includes/js/front-end.js' ), array(), FTS_CURRENT_VERSION, true );

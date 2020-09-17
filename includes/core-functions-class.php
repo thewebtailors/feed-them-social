@@ -11,7 +11,7 @@
  * @author   SlickRemix
  */
 
-namespace feed_them_social;
+namespace feedthemsocial;
 
 /**
  * Class Core_Functions
@@ -190,13 +190,13 @@ class Core_Functions {
 			} elseif ( file_exists( trailingslashit( get_template_directory() ) . 'ft-gallery/' . $template_name ) ) {
 				$located = trailingslashit( get_template_directory() ) . 'ft-gallery/' . $template_name;
 				// Check theme compatibility last.
-			} elseif ( file_exists( trailingslashit( FEED_THEM_GALLERY_PLUGIN_FOLDER_DIR . 'templates/' . $template_name ) ) ) {
-				$located = trailingslashit( FEED_THEM_GALLERY_PLUGIN_FOLDER_DIR . 'templates/' . $template_name );
+			} elseif ( file_exists( trailingslashit( FEED_THEM_SOCIAL_PLUGIN_FOLDER_DIR . 'templates/' . $template_name ) ) ) {
+				$located = trailingslashit( FEED_THEM_SOCIAL_PLUGIN_FOLDER_DIR . 'templates/' . $template_name );
 			}
 			// Use Plugins Album template.
 			if ( empty( $located ) ) {
 
-				$plugin_location = FEED_THEM_GALLERY_PLUGIN_FOLDER_DIR . 'templates/' . $template_name;
+				$plugin_location = FEED_THEM_SOCIAL_PLUGIN_FOLDER_DIR . 'templates/' . $template_name;
 
 				return $plugin_location;
 			}

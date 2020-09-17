@@ -1,4 +1,4 @@
-<?php namespace feed_them_social;
+<?php namespace feedthemsocial;
 
 /**
  * Shortcodes for Feed Them Social

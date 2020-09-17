@@ -9,7 +9,7 @@
  * @author   SlickRemix
  */
 
-namespace feed_them_social;
+namespace feedthemsocial;
 
 /**
  * Class Metabox_Settings
@@ -181,7 +181,7 @@ class Metabox_Settings {
 			wp_enqueue_style( 'slick-admin-page' );
 
 			// Enqueue Styles CSS.
-			wp_register_style( 'slick-styles', plugins_url( 'feed-them-social/includes/feeds/css/styles.css' ), array(), FTS_CURRENT_VERSION );
+			wp_register_style( 'slick-styles', plugins_url( 'feed-them-social/includes/cpt/css/styles.css' ), array(), FTS_CURRENT_VERSION );
 			// Enqueue Admin Styles CSS.
 			wp_enqueue_style( 'slick-styles' );
 
@@ -884,7 +884,7 @@ class Metabox_Settings {
 
 		// REFACTOR NEEDED.
 		if ( is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) {
-			include FEED_THEM_GALLERY_PREMIUM_PLUGIN_FOLDER_DIR . 'includes/watermark/save.php';
+			include FEED_THEM_SOCIAL_PREMIUM_PLUGIN_FOLDER_DIR . 'includes/watermark/save.php';
 		}
 
 		return $array_to_save;

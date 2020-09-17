@@ -10,7 +10,7 @@
  * @category Class
  * @author   SlickRemix
  */
-namespace feed_them_social;
+namespace feedthemsocial;
 
 /**
  * Class Core_Functions

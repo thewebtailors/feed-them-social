@@ -11,7 +11,7 @@
  * @author   SlickRemix
  */
 
-namespace feed_them_social;
+namespace feedthemsocial;
 
 // Exit if accessed directly!
 if ( ! defined( 'ABSPATH' ) ) {
