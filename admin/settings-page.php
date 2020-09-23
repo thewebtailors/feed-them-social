@@ -61,7 +61,7 @@ class Settings_Page {
 	public function add_submenu_page() {
 		// Settings Page.
 		add_submenu_page(
-			'edit.php?post_type=fts',
+			'edit.php?post_type=fts_feeds',
 			esc_html__( 'Settings', 'feed_them_social' ),
 			esc_html__( 'Settings', 'feed_them_social' ),
 			'manage_options',

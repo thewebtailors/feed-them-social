@@ -157,7 +157,7 @@ class Core_Functions {
 		} else {
 			switch ( $post_type ) {
 
-				case 'fts':
+				case 'fts_feeds':
 					// Set The Template name.
 					$template_name = 'gallery-template.php';
 

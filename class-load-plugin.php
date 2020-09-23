@@ -25,7 +25,7 @@ class Feed_Them_Social {
 
 		$plugin_loaded->pre_plugin_checks();
 
-		$gallery_main_post_type = 'fts';
+		$gallery_main_post_type = 'fts_feeds';
 
 		$albums_main_post_type = 'fts_albums';
 
@@ -275,7 +275,7 @@ class Feed_Them_Social {
 			echo sprintf(
 				esc_html__( '%1$sThanks for installing Feed Them Social. To get started please view our %2$sSettings%3$s page.%4$s', 'feed_them_social' ),
 				'<div class="notice notice-success updated is-dismissible"><p>',
-				'<a href="' . esc_url( 'edit.php?post_type=fts&page=ft-gallery-settings-page' ) . '">',
+				'<a href="' . esc_url( 'edit.php?post_type=fts_feeds&page=ft-gallery-settings-page' ) . '">',
 				'</a>',
 				'</p></div>'
 			);
@@ -472,7 +472,7 @@ class Feed_Them_Social {
 			$actions,
 			sprintf(
 				esc_html__( '%1$sSettings%2$s | %3$sSupport%4$s', 'feed_them_social' ),
-				'<a href="' . esc_url( 'edit.php?post_type=fts&page=ft-gallery-settings-page' ) . '">',
+				'<a href="' . esc_url( 'edit.php?post_type=fts_feeds&page=ft-gallery-settings-page' ) . '">',
 				'</a>',
 				'<a href="' . esc_url( 'https://www.slickremix.com/support/' ) . '">',
 				'</a>'

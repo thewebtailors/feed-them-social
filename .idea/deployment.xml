@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="FTS Staging 2">
+  <component name="PublishConfigData" serverName="FTS devstage">
     <serverData>
       <paths name="FTS Staging 2">
         <serverdata>
           <mappings>
             <mapping deploy="/wp-content/plugins/feed-them-social" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="FTS devstage">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/wp-content/plugins/feed-them-social" local="$USER_HOME$/Local Sites/fts-dev-site/app/public/wp-content/plugins/feed-them-social" web="/" />
           </mappings>
         </serverdata>
       </paths>

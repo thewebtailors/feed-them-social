@@ -518,7 +518,7 @@ class Metabox_Settings {
 		if ( isset( $current_info['base'] ) ) {
 			?>
 
-			<div class="ft-gallery-settings-tabs-meta-wrap">
+			<div class="fts-settings-tabs-meta-wrap">
 
 				<div class="tabs" id="tabs">
 					<?php

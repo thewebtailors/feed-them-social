@@ -1,3 +1,19 @@
+// Toggle Function for Images
+jQuery.fn.ftsToggleClick = function(func1, func2) {
+    var funcs = [func1, func2];
+    this.data( 'toggleclicked', 0 );
+    this.click(
+        function() {
+            var data = jQuery( this ).data();
+            var tc   = data.toggleclicked;
+            jQuery.proxy( funcs[tc], this )();
+            data.toggleclicked = (tc + 1) % 2;
+        }
+    );
+    return this;
+};
+
+
 // SLICKREMIX START OUR CUSTOM POPUPS
 jQuery( document ).ready(
     function () {
@@ -6,86 +22,81 @@ jQuery( document ).ready(
 
         // WooCommerce Tab where if the orientation checkbox is checked we show an overlay over the global
         // product tab so as not to confuse people of its purpose.
-        var ftg_orientation_checkbox = jQuery( '#fts_smart_image_orient_prod' );
+        var fts_orientation_checkbox = jQuery( '#fts_smart_image_orient_prod' );
         // On click action
         jQuery( 'body' ).on(
             'click',
             '#fts_smart_image_orient_prod',
             function () {
-                if (ftg_orientation_checkbox.is( ':checked' )) {
-                    jQuery( ".ftg-global-model-product-wrap .ftg-settings-overlay" ).show();
+                if (fts_orientation_checkbox.is( ':checked' )) {
+                    jQuery( ".fts-global-model-product-wrap .fts-settings-overlay" ).show();
                 } else {
-                    jQuery( ".ftg-global-model-product-wrap .ftg-settings-overlay" ).hide();
+                    jQuery( ".fts-global-model-product-wrap .fts-settings-overlay" ).hide();
                 }
             }
         );
         // On page loaded action
-        if (ftg_orientation_checkbox.is( ':checked' )) {
-            jQuery( ".ftg-global-model-product-wrap .ftg-settings-overlay" ).show();
+        if (fts_orientation_checkbox.is( ':checked' )) {
+            jQuery( ".fts-global-model-product-wrap .fts-settings-overlay" ).show();
         } else {
-            jQuery( ".ftg-global-model-product-wrap .ftg-settings-overlay" ).hide();
+            jQuery( ".fts-global-model-product-wrap .fts-settings-overlay" ).hide();
         }
 
         jQuery( '#fts_image_to_woo_model_prod' ).on(
             'change',
             function (e) {
-
-                if (jQuery( '#fts_smart_image_orient_prod' ).is( ":checked" )) {
-                    jQuery( '#fts_smart_image_orient_prod' ).prop( 'checked', false )
-                }
-
-                var ftgGlobalValue = jQuery( "select#fts_image_to_woo_model_prod" ).val();
-                // console.log(ftgGlobalValue);
-                if (ftgGlobalValue) {
-                    jQuery( '.ftg-settings-overlay-smart-images' ).show();
+                var ftsGlobalValue = jQuery( "select#fts_image_to_woo_model_prod" ).val();
+                // console.log(ftsGlobalValue);
+                if (ftsGlobalValue) {
+                    jQuery( '.fts-settings-overlay-smart-images' ).show();
                 } else {
-                    jQuery( '.ftg-settings-overlay-smart-images' ).hide();
+                    jQuery( '.fts-settings-overlay-smart-images' ).hide();
                 }
             }
         );
 
-        var ftgGlobalValue = jQuery( "select#fts_image_to_woo_model_prod" ).val();
-        // console.log(ftgGlobalValue);
-        if (ftgGlobalValue) {
-            jQuery( '.ftg-settings-overlay-smart-images' ).show();
+        var ftsGlobalValue = jQuery( "select#fts_image_to_woo_model_prod" ).val();
+        // console.log(ftsGlobalValue);
+        if (ftsGlobalValue) {
+            jQuery( '.fts-settings-overlay-smart-images' ).show();
         } else {
-            jQuery( '.ftg-settings-overlay-smart-images' ).hide();
+            jQuery( '.fts-settings-overlay-smart-images' ).hide();
         }
 
         jQuery( '#fts_zip_to_woo_model_prod' ).on(
             'change',
             function (e) {
-                var ftgGlobalValue = jQuery( "select#fts_zip_to_woo_model_prod" ).val();
-                // console.log(ftgGlobalValue);
-                if (ftgGlobalValue) {
-                    jQuery( '#ftg-tab-content1 .ft-gallery-zip-gallery' ).attr( 'disabled', false );
+                var ftsGlobalValue = jQuery( "select#fts_zip_to_woo_model_prod" ).val();
+                // console.log(ftsGlobalValue);
+                if (ftsGlobalValue) {
+                    jQuery( '#fts-tab-content1 .ft-gallery-zip-gallery' ).attr( 'disabled', false );
 
                 } else {
-                    jQuery( '#ftg-tab-content1 .ft-gallery-zip-gallery' ).attr( 'disabled', true );
+                    jQuery( '#fts-tab-content1 .ft-gallery-zip-gallery' ).attr( 'disabled', true );
                 }
             }
         );
 
-        var ftgGlobalValue = jQuery( "select#fts_zip_to_woo_model_prod" ).val();
-        // console.log(ftgGlobalValue);
-        if (ftgGlobalValue) {
-            jQuery( '#ftg-tab-content1 .ft-gallery-zip-gallery' ).attr( 'disabled', false );
+        var ftsGlobalValue = jQuery( "select#fts_zip_to_woo_model_prod" ).val();
+        // console.log(ftsGlobalValue);
+        if (ftsGlobalValue) {
+            jQuery( '#fts-tab-content1 .ft-gallery-zip-gallery' ).attr( 'disabled', false );
         } else {
-            jQuery( '#ftg-tab-content1 .ft-gallery-zip-gallery' ).attr( 'disabled', true );
+            jQuery( '#fts-tab-content1 .ft-gallery-zip-gallery' ).attr( 'disabled', true );
         }
 
         jQuery( '#fts_image_to_woo_model_prod' ).on(
             'change',
             function (e) {
-                var ftgGlobalValue = jQuery( "select#fts_image_to_woo_model_prod" ).val();
-                // console.log(ftgGlobalValue);
-                if (ftgGlobalValue) {
-                    jQuery( '.ftg-global-model-product-wrap .ftg-hide-me' ).hide();
-                    jQuery( '.ftg-js-edit-button-holder' ).html( '<div class="ft-gallery-edit-woo-model-prod ftg-fadein" style="display: none"><a href="' + ftg_woo.admin_url + 'post.php?post=' + ftgGlobalValue + '&action=edit" target="_blank">' + ftg_woo.global_product_option + '</a></div>' );
-                    jQuery( '.ftg-global-model-product-wrap .ftg-fadein' ).fadeIn();
+                var ftsGlobalValue = jQuery( "select#fts_image_to_woo_model_prod" ).val();
+                // console.log(ftsGlobalValue);
+                if (ftsGlobalValue) {
+                    jQuery( '.fts-global-model-product-wrap .fts-hide-me' ).hide();
+                    jQuery( '.fts-js-edit-button-holder' ).html( '<div class="ft-gallery-edit-woo-model-prod fts-fadein" style="display: none"><a href="' + fts_woo.admin_url + 'post.php?post=' + ftsGlobalValue + '&action=edit" target="_blank">' + fts_woo.global_product_option + '</a></div>' );
+                    jQuery( '.fts-global-model-product-wrap .fts-fadein' ).fadeIn();
 
                 } else {
-                    jQuery( '.ftg-global-model-product-wrap .ftg-hide-me, .ftg-global-model-product-wrap .ftg-fadein' ).fadeOut();
+                    jQuery( '.fts-global-model-product-wrap .fts-hide-me, .fts-global-model-product-wrap .fts-fadein' ).fadeOut();
                 }
             }
         );
@@ -93,14 +104,14 @@ jQuery( document ).ready(
         jQuery( '#fts_landscape_to_woo_model_prod' ).on(
             'change',
             function (e) {
-                var ftgGlobalValue = jQuery( "select#fts_landscape_to_woo_model_prod" ).val();
-                // console.log(ftgGlobalValue);
-                if (ftgGlobalValue) {
-                    jQuery( '.ftg-landscape-option-wrapper .ftg-hide-me' ).hide();
-                    jQuery( '.ftg-js-edit-button-holder-landscape' ).html( '<div class="ft-gallery-edit-woo-model-prod ftg-fadein" style="display: none"><a href="' + ftg_woo.admin_url + 'post.php?post=' + ftgGlobalValue + '&action=edit" target="_blank">' + ftg_woo.global_product_option + '</a></div>' );
-                    jQuery( '.ftg-landscape-option-wrapper .ftg-fadein' ).fadeIn();
+                var ftsGlobalValue = jQuery( "select#fts_landscape_to_woo_model_prod" ).val();
+                // console.log(ftsGlobalValue);
+                if (ftsGlobalValue) {
+                    jQuery( '.fts-landscape-option-wrapper .fts-hide-me' ).hide();
+                    jQuery( '.fts-js-edit-button-holder-landscape' ).html( '<div class="ft-gallery-edit-woo-model-prod fts-fadein" style="display: none"><a href="' + fts_woo.admin_url + 'post.php?post=' + ftsGlobalValue + '&action=edit" target="_blank">' + fts_woo.global_product_option + '</a></div>' );
+                    jQuery( '.fts-landscape-option-wrapper .fts-fadein' ).fadeIn();
                 } else {
-                    jQuery( '.ftg-landscape-option-wrapper .ftg-hide-me, .ftg-landscape-option-wrapper .ftg-fadein' ).fadeOut();
+                    jQuery( '.fts-landscape-option-wrapper .fts-hide-me, .fts-landscape-option-wrapper .fts-fadein' ).fadeOut();
                 }
             }
         );
@@ -108,28 +119,28 @@ jQuery( document ).ready(
         jQuery( '#fts_square_to_woo_model_prod' ).on(
             'change',
             function (e) {
-                var ftgGlobalValue = jQuery( "select#fts_square_to_woo_model_prod" ).val();
-                // console.log(ftgGlobalValue);
-                if (ftgGlobalValue) {
-                    jQuery( '.ftg-square-option-wrapper .ftg-hide-me' ).hide();
-                    jQuery( '.ftg-js-edit-button-holder-square' ).html( '<div class="ft-gallery-edit-woo-model-prod ftg-fadein" style="display: none"><a href="' + ftg_woo.admin_url + 'post.php?post=' + ftgGlobalValue + '&action=edit" target="_blank">' + ftg_woo.global_product_option + '</a></div>' );
-                    jQuery( '.ftg-square-option-wrapper .ftg-fadein' ).fadeIn();
+                var ftsGlobalValue = jQuery( "select#fts_square_to_woo_model_prod" ).val();
+                // console.log(ftsGlobalValue);
+                if (ftsGlobalValue) {
+                    jQuery( '.fts-square-option-wrapper .fts-hide-me' ).hide();
+                    jQuery( '.fts-js-edit-button-holder-square' ).html( '<div class="ft-gallery-edit-woo-model-prod fts-fadein" style="display: none"><a href="' + fts_woo.admin_url + 'post.php?post=' + ftsGlobalValue + '&action=edit" target="_blank">' + fts_woo.global_product_option + '</a></div>' );
+                    jQuery( '.fts-square-option-wrapper .fts-fadein' ).fadeIn();
                 } else {
-                    jQuery( '.ftg-square-option-wrapper .ftg-hide-me, .ftg-square-option-wrapper .ftg-fadein' ).fadeOut();
+                    jQuery( '.fts-square-option-wrapper .fts-hide-me, .fts-square-option-wrapper .fts-fadein' ).fadeOut();
                 }
             }
         );
         jQuery( '#fts_portrait_to_woo_model_prod' ).on(
             'change',
             function (e) {
-                var ftgGlobalValue = jQuery( "select#fts_portrait_to_woo_model_prod" ).val();
-                // console.log(ftgGlobalValue);
-                if (ftgGlobalValue) {
-                    jQuery( '.ftg-portrait-option-wrapper .ftg-hide-me' ).hide();
-                    jQuery( '.ftg-js-edit-button-holder-portrait' ).html( '<div class="ft-gallery-edit-woo-model-prod ftg-fadein" style="display: none"><a href="' + ftg_woo.admin_url + 'post.php?post=' + ftgGlobalValue + '&action=edit" target="_blank">' + ftg_woo.global_product_option + '</a></div>' );
-                    jQuery( '.ftg-portrait-option-wrapper .ftg-fadein' ).fadeIn();
+                var ftsGlobalValue = jQuery( "select#fts_portrait_to_woo_model_prod" ).val();
+                // console.log(ftsGlobalValue);
+                if (ftsGlobalValue) {
+                    jQuery( '.fts-portrait-option-wrapper .fts-hide-me' ).hide();
+                    jQuery( '.fts-js-edit-button-holder-portrait' ).html( '<div class="ft-gallery-edit-woo-model-prod fts-fadein" style="display: none"><a href="' + fts_woo.admin_url + 'post.php?post=' + ftsGlobalValue + '&action=edit" target="_blank">' + fts_woo.global_product_option + '</a></div>' );
+                    jQuery( '.fts-portrait-option-wrapper .fts-fadein' ).fadeIn();
                 } else {
-                    jQuery( '.ftg-portrait-option-wrapper .ftg-hide-me, .ftg-portrait-option-wrapper .ftg-fadein' ).fadeOut();
+                    jQuery( '.fts-portrait-option-wrapper .fts-hide-me, .fts-portrait-option-wrapper .fts-fadein' ).fadeOut();
                 }
             }
         );
@@ -137,70 +148,74 @@ jQuery( document ).ready(
         jQuery( '#fts_zip_to_woo_model_prod' ).on(
             'change',
             function (e) {
-                var ftgGlobalValue = jQuery( "select#fts_zip_to_woo_model_prod" ).val();
-                // console.log(ftgGlobalValue);
-                if (ftgGlobalValue) {
-                    jQuery( '.ftg-zip-option-wrapper .ftg-hide-me' ).hide();
-                    jQuery( '.ftg-js-edit-button-holder-zip' ).html( '<div class="ft-gallery-edit-woo-model-prod ftg-fadein" style="display: none"><a href="' + ftg_woo.admin_url + 'post.php?post=' + ftgGlobalValue + '&action=edit" target="_blank">' + ftg_woo.global_product_option + '</a></div>' );
-                    jQuery( '.ftg-zip-option-wrapper .ftg-fadein' ).fadeIn();
+                var ftsGlobalValue = jQuery( "select#fts_zip_to_woo_model_prod" ).val();
+                // console.log(ftsGlobalValue);
+                if (ftsGlobalValue) {
+                    jQuery( '.fts-zip-option-wrapper .fts-hide-me' ).hide();
+                    jQuery( '.fts-js-edit-button-holder-zip' ).html( '<div class="ft-gallery-edit-woo-model-prod fts-fadein" style="display: none"><a href="' + fts_woo.admin_url + 'post.php?post=' + ftsGlobalValue + '&action=edit" target="_blank">' + fts_woo.global_product_option + '</a></div>' );
+                    jQuery( '.fts-zip-option-wrapper .fts-fadein' ).fadeIn();
                 } else {
-                    jQuery( '.ftg-zip-option-wrapper .ftg-hide-me, .ftg-zip-option-wrapper .ftg-fadein' ).fadeOut();
+                    jQuery( '.fts-zip-option-wrapper .fts-hide-me, .fts-zip-option-wrapper .fts-fadein' ).fadeOut();
                 }
             }
         );
 
-        jQuery( '#fts-gallery-checkAll' ).toggle(
-            function (event) {
-                event.preventDefault(); // stop post action
+        jQuery( '.post-type-fts #fts-gallery-checkAll' ).ftsToggleClick(
+            function ( func1, func2 ) {
+                // jQuery('#fts-gallery-checkAll').clicktoggle(even,odd);
+                // event.preventDefault(); // stop post action
                 jQuery( '#img1plupload-thumbs input:checkbox' ).attr( 'checked', 'checked' );
+                jQuery( ".ft-gallery-myCheckbox" ).parents( '.thumb' ).addClass( 'ft-gallery-checked' );
                 jQuery( this ).html( 'Clear All' )
                 jQuery( ".wp-core-ui .button-primary.ft-gallery-download-selection-option" ).show();
-                var ftgGlobalValue           = jQuery( "select#fts_image_to_woo_model_prod" ).val();
-                var ftgLandscapeValue        = jQuery( "select#fts_landscape_to_woo_model_prod" ).val();
-                var ftgSquareValue           = jQuery( "select#fts_square_to_woo_model_prod" ).val();
-                var ftgPortraitValue         = jQuery( "select#fts_portrait_to_woo_model_prod" ).val();
-                var ftgorientationValueCheck = jQuery( "#fts_smart_image_orient_prod" ).is( ':checked' );
-                var ftgchechecked            = jQuery( ".ft-gallery-myCheckbox input" ).is( ':checked' );
+                var ftsGlobalValue           = jQuery( "select#fts_image_to_woo_model_prod" ).val();
+                var ftsLandscapeValue        = jQuery( "select#fts_landscape_to_woo_model_prod" ).val();
+                var ftsSquareValue           = jQuery( "select#fts_square_to_woo_model_prod" ).val();
+                var ftsPortraitValue         = jQuery( "select#fts_portrait_to_woo_model_prod" ).val();
+                var ftsorientationValueCheck = jQuery( "#fts_smart_image_orient_prod" ).is( ':checked' );
+                var ftschechecked            = jQuery( ".ft-gallery-myCheckbox" ).parents( '.thumb' ).hasClass( 'ft-gallery-checked' );
 
-                if (ftgGlobalValue && ftgchechecked === true || ftgLandscapeValue && ftgSquareValue && ftgPortraitValue && ftgorientationValueCheck && ftgchechecked === true) {
-                    jQuery( '#ftg-tab-content1 .ft-gallery-create-woo' ).attr( 'disabled', false );
+                if (ftsGlobalValue && ftschechecked === true || ftsLandscapeValue && ftsSquareValue && ftsPortraitValue && ftsorientationValueCheck && ftschechecked === true) {
+                    jQuery( '#fts-tab-content1 .ft-gallery-create-woo' ).attr( 'disabled', false );
                 }
 
             },
             function () {
                 jQuery( '#img1plupload-thumbs input:checkbox' ).removeAttr( 'checked' );
+                jQuery( ".ft-gallery-myCheckbox" ).parents( '.thumb' ).removeClass( 'ft-gallery-checked' );
                 jQuery( ".wp-core-ui .button-primary.ft-gallery-download-selection-option" ).hide();
-                jQuery( '#ftg-tab-content1 .ft-gallery-create-woo' ).attr( 'disabled', true );
+                jQuery( '#fts-tab-content1 .ft-gallery-create-woo' ).attr( 'disabled', true );
                 jQuery( this ).html( 'Select All' );
             }
         );
 
-        jQuery( '#img1plupload-thumbs img, #img1plupload-thumbs .ft-gallery-myCheckbox' ).toggle(
-            function (event) {
-                event.preventDefault(); // stop post action
+        jQuery( '.post-type-fts #img1plupload-thumbs .ft-gallery-myCheckbox span, .post-type-fts #img1plupload-thumbs img' ).ftsToggleClick(
+            function ( func1, func2 ) {
+                // event.preventDefault(); // stop post action
                 if (jQuery( "#img1plupload-thumbs input" ).length > 0) {
                     jQuery( ".wp-core-ui .button-primary.ft-gallery-download-selection-option" ).show();
                 }
 
+                jQuery( this ).parents( '.thumb' ).addClass( 'ft-gallery-checked' );
                 jQuery( this ).parents( '.thumb' ).find( 'input:checkbox' ).attr( 'checked', 'checked' );
 
-                var ftgGlobalValue           = jQuery( "select#fts_image_to_woo_model_prod" ).val();
-                var ftgLandscapeValue        = jQuery( "select#fts_landscape_to_woo_model_prod" ).val();
-                var ftgSquareValue           = jQuery( "select#fts_square_to_woo_model_prod" ).val();
-                var ftgPortraitValue         = jQuery( "select#fts_portrait_to_woo_model_prod" ).val();
-                var ftgorientationValueCheck = jQuery( "#fts_smart_image_orient_prod" ).is( ':checked' );
-                var ftgchechecked            = jQuery( ".ft-gallery-myCheckbox input" ).is( ':checked' );
+                var ftsGlobalValue           = jQuery( "select#fts_image_to_woo_model_prod" ).val();
+                var ftsLandscapeValue        = jQuery( "select#fts_landscape_to_woo_model_prod" ).val();
+                var ftsSquareValue           = jQuery( "select#fts_square_to_woo_model_prod" ).val();
+                var ftsPortraitValue         = jQuery( "select#fts_portrait_to_woo_model_prod" ).val();
+                var ftsorientationValueCheck = jQuery( "#fts_smart_image_orient_prod" ).is( ':checked' );
+                var ftschechecked            = jQuery( this ).parents( '.thumb' ).hasClass( 'ft-gallery-checked' );
 
-                if (ftgGlobalValue && ftgchechecked === true || ftgLandscapeValue && ftgSquareValue && ftgPortraitValue && ftgorientationValueCheck && ftgchechecked === true) {
-                    jQuery( '#ftg-tab-content1 .ft-gallery-create-woo' ).attr( 'disabled', false );
+                if (ftsGlobalValue && ftschechecked === true || ftsLandscapeValue && ftsSquareValue && ftsPortraitValue && ftsorientationValueCheck && ftschechecked === true) {
+                    jQuery( '#fts-tab-content1 .ft-gallery-create-woo' ).attr( 'disabled', false );
                 }
             },
             function () {
                 jQuery( this ).parents( '.thumb' ).find( 'input:checkbox' ).removeAttr( 'checked' );
-                if ( ! jQuery( "#img1plupload-thumbs input" ).is( ":checked" )) {
-
+                jQuery( this ).parents( '.thumb' ).removeClass( 'ft-gallery-checked' );
+                if ( ! jQuery( ".ft-gallery-myCheckbox" ).parents( '.thumb' ).hasClass( 'ft-gallery-checked' ) ) {
                     jQuery( ".wp-core-ui .button-primary.ft-gallery-download-selection-option" ).hide();
-                    jQuery( '#ftg-tab-content1 .ft-gallery-create-woo' ).attr( 'disabled', true );
+                    jQuery( '#fts-tab-content1 .ft-gallery-create-woo' ).attr( 'disabled', true );
                 }
             }
         );
@@ -208,7 +223,7 @@ jQuery( document ).ready(
         // SLICKREMIX: MUST HAVE THIS IN PLACE TO BE ABLE TO CHECK WHAT KIND OF VIDEOS ARE BEING CLICKED ON!
         jQuery( 'body' ).on(
             'click',
-            '#ftg-photo-prev, #ftg-photo-next, .ft-gallery-popup .mfp-image-holder .fts-popup-image-position',
+            '#fts-photo-prev, #fts-photo-next, .ft-gallery-popup .mfp-image-holder .fts-popup-image-position',
             function (e) {
                 // alert('test');
                 jQuery( "body" ).addClass( "fts-using-arrows" );
@@ -269,29 +284,26 @@ jQuery( document ).ready(
             }
 
             // Create the Tags in Popup and add them to the UL!
-            CreateTags(tags, imageid)
-            {
-                if ( jQuery( 'div.ft-gallery-popup-form' ).hasClass( 'ftg-premium-active' ) ) {
-                    if (tags !== 'no tags') {
-                        for (var tag of tags) {
-                            jQuery( '.popup-ftg-tags ul.tagchecklist' ).show();
-                            jQuery( ".popup-ftg-tags ul.tagchecklist" ).append( '<li class="ftg-term-li" data-termli="' + tag.term_id + '"><button type="button" id="delete-media-term-' + tag.term_id + '" data-termid="' + tag.term_id + '" data-imageid="' + imageid + '" class="delete-media-term ntdelbutton"><span class="remove-tag-icon" aria-hidden="true"></span><span class="screen-reader-text">Remove Tag: ' + tag.name + '</span></button>&nbsp; ' + tag.name + '</li>' );
-                        }
-
-                        // Hide No Tags Message!
-                        jQuery( '.ftg-tags-none' ).hide();
-                    } else {
-                        // Hide No Tags Message!
-                        jQuery( '.popup-ftg-tags ul.tagchecklist' ).hide();
-                        jQuery( '.ftg-tags-none' ).show();
+            CreateTags(tags, imageid) {
+                if (tags !== 'no tags') {
+                    for (var tag of tags) {
+                        jQuery( '.popup-fts-tags ul.tagchecklist' ).show();
+                        jQuery( ".popup-fts-tags ul.tagchecklist" ).append( '<li class="fts-term-li" data-termli="' + tag.term_id + '"><button type="button" id="delete-media-term-' + tag.term_id + '" data-termid="' + tag.term_id + '" data-imageid="' + imageid + '" class="delete-media-term ntdelbutton"><span class="remove-tag-icon" aria-hidden="true"></span><span class="screen-reader-text">Remove Tag: ' + tag.name + '</span></button>&nbsp; ' + tag.name + '</li>' );
                     }
+
+                    // Hide No Tags Message!
+                    jQuery( '.fts-tags-none' ).hide();
+                } else {
+                    // Hide No Tags Message!
+                    jQuery( '.popup-fts-tags ul.tagchecklist' ).hide();
+                    jQuery( '.fts-tags-none' ).show();
                 }
             }
 
             // Set Attribute for Image ID!
             SetImageAttr(imageid) {
-                if ( jQuery('div.ft-gallery-popup-form').hasClass('ftg-premium-active') ) {
-                    document.querySelector('.popup-ftg-tags button.save-media-term').setAttribute('data-imageid', imageid);
+                if ( jQuery('div.ft-gallery-popup-form').hasClass('fts-premium-active') ) {
+                    document.querySelector('.popup-fts-tags button.save-media-term').setAttribute('data-imageid', imageid);
 
                 }
             }
@@ -326,9 +338,9 @@ jQuery( document ).ready(
 
                             // Update Popup information for image!
                             this.UpdatePopInfo( jsArray );
-                            if ( jQuery('div.ft-gallery-popup-form').hasClass('ftg-premium-active') ) {
-                                let tags = jsArray['tags'];
 
+                            if( !jQuery( '.ft-gallery-popup-form').hasClass( "fts-premium-not-active" ) ) {
+                                let tags = jsArray['tags'];
                                 // Create tags and append to tags list!
                                 this.CreateTags(tags, id);
                             }
@@ -487,16 +499,16 @@ jQuery( document ).ready(
                                 '<div class="mfp-figure"><div class="mfp-close">X</div>' +
                                 '<div class="fts-popup-wrap">' +
                                 '    <div class="fts-popup-half ">' +
-                                '               <button title="previous" type="button" id="ftg-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>' +
+                                '               <button title="previous" type="button" id="fts-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>' +
                                 '           <div class="fts-popup-image-position" style="height:591px;">' +
                                 '                   <span class="fts-position-helper"></span><div class="mfp-img"></div>' +
                                 '       </div>' +
-                                '               <button title="next" type="button" id="ftg-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>' +
+                                '               <button title="next" type="button" id="fts-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>' +
                                 '    </div>' +
                                 '<div class="fts-popup-second-half">' +
                                 '<div class="mfp-bottom-bar">' +
                                 '<div class="mfp-title"></div>' +
-                                '<a class="fts-powered-by-text" href="https://slickremix.com" target="_blank">Powered by Feed Them Social</a>' +
+                                '<a class="fts-powered-by-text" href="https://slickremix.com" target="_blank">Powered by Feed Them Gallery</a>' +
                                 '<div class="mfp-counter"></div>' +
                                 '</div>' +
                                 '</div>' +
@@ -511,11 +523,11 @@ jQuery( document ).ready(
                                 '<div class="mfp-figure"><div class="mfp-close">X</div>' +
                                 '<div class="fts-popup-wrap">' +
                                 '    <div class="fts-popup-half ">' +
-                                '               <button title="previous" type="button" id="ftg-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>' +
+                                '               <button title="previous" type="button" id="fts-photo-prev" class="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>' +
                                 '           <div class="fts-popup-image-position">' +
                                 '                           <div class="mfp-iframe-scaler"><iframe class="mfp-iframe fts-iframe-popup-element" frameborder="0" allowfullscreen></iframe><video class="mfp-iframe fts-video-popup-element" allowfullscreen autoplay controls></video>' +
                                 '                           </div>' +
-                                '               <button title="next" type="button" id="ftg-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>' +
+                                '               <button title="next" type="button" id="fts-photo-next" class="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>' +
                                 '<script>' +
                                 // SLICKREMIX: MUST HAVE THIS IN PLACE TO BE ABLE TO CHECK WHAT KIND OF VIDEOS ARE BEING CLICKED ON WHEN FIRST LOADED, AFTER THEY ARE LOADED REFER TO THE CLICK FUNCTION FOR THE ERRORS ABOVE
                                 'if(jQuery("body").hasClass("fts-video-iframe-choice")){jQuery(".fts-iframe-popup-element").attr("src", "").hide(); } else if(!jQuery("body").hasClass("fts-using-arrows")){jQuery(".fts-video-popup-element").attr("src", "").hide(); };  jQuery(".ft-gallery-popup video").click(function(){jQuery(this).trigger(this.paused ? this.paused ? "play" : "play" : "pause")});</script>' +
@@ -598,7 +610,7 @@ jQuery( document ).ready(
         // Next Button is clicked in Popup!
         jQuery( document ).on(
             "click",
-            ".fts-popup-image-position, #ftg-photo-next",
+            ".fts-popup-image-position, #fts-photo-next",
             () => {
                 var inst_items = jQuery.magnificPopup.instance;
                 let item_info  = FtgPopupClass.NextPrev( inst_items.items, inst_items.index, 'next' ),
@@ -615,12 +627,12 @@ jQuery( document ).ready(
         // Previous Button is clicked in Popup!
         jQuery( document ).on(
             "click",
-            "#ftg-photo-prev",
+            "#fts-photo-prev",
             () => {
                 var inst_items = jQuery.magnificPopup.instance;
                 let item_info  = FtgPopupClass.NextPrev( inst_items.items, inst_items.index, 'previous' ),
-                    id                 = item_info.data.imgid,
-                    nonce              = item_info.data.nonce;
+                    id             = item_info.data.imgid,
+                    nonce          = item_info.data.nonce;
                 inst_items.prev();
                 jQuery( ".fts-popup-image-position, .fts-popup-second-half .mfp-bottom-bar" ).height() < jQuery( ".mfp-img" ).height() ? jQuery( ".fts-popup-image-position, .fts-popup-second-half .mfp-bottom-bar" ).css( "height", jQuery( ".mfp-img" ).height() ) : jQuery( ".fts-popup-second-half .mfp-bottom-bar" ).css( "height", jQuery( ".fts-popup-image-position" ).height() );
                 // Set Attribute for Image ID!

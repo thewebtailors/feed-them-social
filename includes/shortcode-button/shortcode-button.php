@@ -82,7 +82,7 @@ class Shortcode_Button {
 		$is_admin       = is_admin();
 
 		// We must only show contents below if we're on a post page in the wp admin.
-		if ( $is_admin && 'post' !== $current_screen->base || $is_admin && 'fts' === $current_screen->post_type || $is_admin && 'fts_albums' === $current_screen->post_type ) {
+		if ( $is_admin && 'post' !== $current_screen->base || $is_admin && 'fts_feeds' === $current_screen->post_type || $is_admin && 'fts_albums' === $current_screen->post_type ) {
 			return;
 		}
 
@@ -172,7 +172,7 @@ class Shortcode_Button {
 
 		// Build WP_Query arguments.
 		$args = array(
-			'post_type'      => 'fts',
+			'post_type'      => 'fts_feeds',
 			'post_status'    => 'publish',
 			'posts_per_page' => 99,
 			'no_found_rows'  => true,

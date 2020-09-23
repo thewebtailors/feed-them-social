@@ -267,7 +267,7 @@ class Gallery {
 		$my_get  = stripslashes_deep( $_GET );
 		$my_post = stripslashes_deep( $_POST );
 
-		if ( 'fts' === $current_screen->post_type && 'post' === $current_screen->base && is_admin() ) {
+		if ( 'fts_feeds' === $current_screen->post_type && 'post' === $current_screen->base && is_admin() ) {
 			if ( isset( $my_get['post'] ) ) {
 				$this->parent_post_id = $my_get['post'];
 			}
@@ -410,8 +410,8 @@ class Gallery {
 			'map_meta_cap'        => true, // Allows Users to still edit Payments
 			'has_archive'         => true,
 			'hierarchical'        => true,
-			'query_var'           => 'fts',
-			'rewrite'             => array( 'slug' => 'fts-cpt' ),
+			'query_var'           => 'fts_feeds',
+			'rewrite'             => array( 'slug' => 'feeds' ),
 
 			'menu_icon'           => '',
 			'supports'            => array( 'title', 'revisions', 'thumbnail' ),
@@ -419,7 +419,7 @@ class Gallery {
 		// Set the available taxonomies here
 		// 'taxonomies' => array('fts_topics')
 		);
-		register_post_type( 'fts', $responses_cpt_args );
+		register_post_type( 'fts_feeds', $responses_cpt_args );
 	}
 
 	/**
@@ -447,7 +447,7 @@ class Gallery {
 
 		register_taxonomy(
 			'fts_cats',
-			array( 'fts' ),
+			array( 'fts_feeds' ),
 			array(
 				'hierarchical'          => false,
 				'labels'                => $labels,
@@ -692,7 +692,7 @@ class Gallery {
 		// Get current screen.
 		$current_screen = get_current_screen();
 
-		if ( is_admin() && 'fts' === $current_screen->post_type && 'post' === $current_screen->base || is_admin() && 'fts' === $current_screen->post_type && isset( $_GET['page'] ) && 'template_settings_page' === $_GET['page'] || is_admin() && 'fts_albums' === $current_screen->post_type && 'post' === $current_screen->base ) {
+		if ( is_admin() && 'fts_feeds' === $current_screen->post_type && 'post' === $current_screen->base || is_admin() && 'fts_feeds' === $current_screen->post_type && isset( $_GET['page'] ) && 'template_settings_page' === $_GET['page'] || is_admin() && 'fts_albums' === $current_screen->post_type && 'post' === $current_screen->base ) {
 
 			// Set the post_id for localization.
 			$post_id = isset( $post->ID ) ? array( 'post' => $post->ID ) : '';
@@ -750,15 +750,15 @@ class Gallery {
 	public function fts_add_metaboxes() {
 		global $post;
 		// Check we are using Feed Them Social Custom Post type.
-		if ( 'fts' !== $post->post_type ) {
+		if ( 'fts_feeds' !== $post->post_type ) {
 			return;
 		}
 
 		// Image Uploader and Gallery area in admin.
-		add_meta_box( 'ft-galleries-upload-mb', esc_html__( 'Feed Them Social Settings', 'feed_them_social' ), array( $this, 'fts_tab_menu_metabox' ), 'fts', 'normal', 'high', null );
+		add_meta_box( 'ft-galleries-upload-mb', esc_html__( 'Feed Them Social Settings', 'feed_them_social' ), array( $this, 'fts_tab_menu_metabox' ), 'fts_feeds', 'normal', 'high', null );
 
 		// Link Settings Meta Box.
-		add_meta_box( 'ft-galleries-shortcode-side-mb', esc_html__( 'Feed Them Social Shortcode', 'feed_them_social' ), array( $this, 'fts_shortcode_meta_box' ), 'fts', 'side', 'high', null );
+		add_meta_box( 'ft-galleries-shortcode-side-mb', esc_html__( 'Feed Them Social Shortcode', 'feed_them_social' ), array( $this, 'fts_shortcode_meta_box' ), 'fts_feeds', 'side', 'high', null );
 	}
 
 	/**
@@ -1002,7 +1002,7 @@ class Gallery {
 							global $post;
 							// Getting the next post id by seeing if an autodraft has been made in our custom post type.
 							$create_next_args  = array(
-								'post_type'           => 'fts',
+								'post_type'           => 'fts_feeds',
 								'posts_per_page'      => 1,
 								'post_status'         => 'auto-draft',
 								'ignore_sticky_posts' => 1,
@@ -1590,7 +1590,7 @@ class Gallery {
 							<?php
 							echo sprintf(
 								esc_html__( 'Please look over the options on the %1$sSettings%2$s page before creating your first gallery.%3$s1. Enter a title for your gallery at the top of the page in the "Enter title here" input. %4$s2. Add images to the gallery and sort them in the order you want. %4$s3. Publish the gallery by clicking the blue "Publish" button. %4$s4. Now you can edit your images title, description and more. %5$sView our %6$sImage Gallery Demos%7$s or %8$sFull documentation%9$s for more details.', 'feed_them_social' ),
-								'<a href="' . esc_url( 'edit.php?post_type=fts&page=ft-gallery-settings-page' ) . '"  target="_blank">',
+								'<a href="' . esc_url( 'edit.php?post_type=fts_feeds&page=ft-gallery-settings-page' ) . '"  target="_blank">',
 								'</a>',
 								'<p/><p>',
 								'<br/>',
@@ -1660,7 +1660,7 @@ class Gallery {
 				<?php
 				echo sprintf(
 					esc_html__( 'Additional Global options available on the %1$sSettings Page%2$s', 'feed_them_social' ),
-					'<a href="' . esc_url( 'edit.php?post_type=fts&page=ft-gallery-settings-page' ) . '" >',
+					'<a href="' . esc_url( 'edit.php?post_type=fts_feeds&page=ft-gallery-settings-page' ) . '" >',
 					'</a>'
 				);
 				?>
@@ -1687,7 +1687,7 @@ class Gallery {
 			<?php
 			echo sprintf(
 				esc_html__( 'Additional Global options available on the %1$sSettings Page%2$s', 'feed_them_social' ),
-				'<a href="' . esc_url( 'edit.php?post_type=fts&page=ft-gallery-settings-page' ) . '" >',
+				'<a href="' . esc_url( 'edit.php?post_type=fts_feeds&page=ft-gallery-settings-page' ) . '" >',
 				'</a>'
 			);
 			?>
@@ -2104,7 +2104,7 @@ class Gallery {
 
 		$screen = get_current_screen();
 
-		if ( 'edit.php?post_type=fts' === $screen->parent_file && 'add' === $screen->action ) {
+		if ( 'edit.php?post_type=fts_feeds' === $screen->parent_file && 'add' === $screen->action ) {
 			?>
 			<p>
 				<label><label><?php echo esc_html__( 'Save or Publish this Gallery to be able to copy this Gallery\'s Shortcode.', 'feed_them_social' ); ?></label>
@@ -2637,7 +2637,7 @@ class Gallery {
 				 */
 	public function fts_duplicate_post_link( $actions, $post ) {
 		// make sure we only show the duplicate gallery link on our pages
-		if ( current_user_can( 'edit_posts' ) && 'fts' === $_GET['post_type'] ) {
+		if ( current_user_can( 'edit_posts' ) && 'fts_feeds' === $_GET['post_type'] ) {
 			$actions['duplicate'] = '<a id="ft-gallery-duplicate-action" href="' . esc_url( wp_nonce_url( 'admin.php?action=fts_duplicate_post_as_draft&post=' . $post->ID, basename( __FILE__ ), 'duplicate_nonce' ) ) . '" title="Duplicate this item" rel="permalink">' . esc_html__( 'Duplicate', 'feed_them_social' ) . '</a>';
 		}
 
@@ -2654,7 +2654,7 @@ class Gallery {
 		$current_screen = get_current_screen();
 		$verify         = isset( $_GET['post_type'] ) ? $_GET['post_type'] : '';
 		// check to make sure we are not on a new fts post, because what is the point of duplicating a new one until we have published it?
-		if ( 'fts' === $current_screen->post_type && 'fts' !== $verify ) {
+		if ( 'fts_feeds' === $current_screen->post_type && 'fts_feeds' !== $verify ) {
 			$id = $_GET['post'];
 			?>
 			<div id="ft-gallery-duplicate-action">

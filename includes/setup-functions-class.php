@@ -235,9 +235,9 @@ class Setup_Functions {
 		global $submenu;
 
 		// Unset Menu Items We don't want them to have.
-		// unset($submenu['edit.php?post_type=fts'][5]);
-		// unset($submenu['edit.php?post_type=fts'][10]);
-		// unset($submenu['edit.php?post_type=fts'][15]);.
+		// unset($submenu['edit.php?post_type=fts_feeds'][5]);
+		// unset($submenu['edit.php?post_type=fts_feeds'][10]);
+		// unset($submenu['edit.php?post_type=fts_feeds'][15]);.
 		return $submenu;
 	}
 
@@ -348,7 +348,7 @@ class Setup_Functions {
 				'id'     => 'fts_admin_bar_view_galleries',
 				'parent' => 'fts_admin_bar',
 				'title'  => esc_html__( 'Galleries ', 'ft-gallery' ),
-				'href'   => admin_url( 'edit.php?post_type=fts' ),
+				'href'   => admin_url( 'edit.php?post_type=fts_feeds' ),
 			)
 		);
 		// Add Gallery.
@@ -357,7 +357,7 @@ class Setup_Functions {
 				'id'     => 'fts_admin_bar_new_gallery',
 				'parent' => 'fts_admin_bar',
 				'title'  => esc_html__( 'Add Gallery ', 'ft-gallery' ),
-				'href'   => admin_url( 'post-new.php?post_type=fts' ),
+				'href'   => admin_url( 'post-new.php?post_type=fts_feeds' ),
 			)
 		);
 		// Settings.
@@ -366,7 +366,7 @@ class Setup_Functions {
 				'id'     => 'fts_admin_bar_settings',
 				'parent' => 'fts_admin_bar',
 				'title'  => esc_html__( 'Settings', 'ft-gallery' ),
-				'href'   => admin_url( 'edit.php?post_type=fts&page=ft-gallery-settings-page' ),
+				'href'   => admin_url( 'edit.php?post_type=fts_feeds&page=ft-gallery-settings-page' ),
 			)
 		);
 
@@ -376,7 +376,7 @@ class Setup_Functions {
 				'id'     => 'fts_admin_bar_system_info',
 				'parent' => 'fts_admin_bar',
 				'title'  => esc_html__( 'System Info', 'ft-gallery' ),
-				'href'   => admin_url( 'edit.php?post_type=fts&page=ft-gallery-system-info-submenu-page' ),
+				'href'   => admin_url( 'edit.php?post_type=fts_feeds&page=ft-gallery-system-info-submenu-page' ),
 			)
 		);
 		if ( is_plugin_active( 'feed_them_social-premium/feed_them_social-premium.php' ) ) {
@@ -386,7 +386,7 @@ class Setup_Functions {
 					'id'     => 'fts_admin_bar_plugin_license',
 					'parent' => 'fts_admin_bar',
 					'title'  => esc_html__( 'Plugin License', 'ft-gallery' ),
-					'href'   => admin_url( 'edit.php?post_type=fts&page=ft-gallery-license-page' ),
+					'href'   => admin_url( 'edit.php?post_type=fts_feeds&page=ft-gallery-license-page' ),
 				)
 			);
 		}

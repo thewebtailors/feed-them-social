@@ -116,16 +116,16 @@ jQuery( document ).ready(
                                 attachment.attributes['html']       = html;
                                 attachment.attributes['post_id']    = wp.media.view.settings.post.id;
                                 // var src_str = attachment.url;
-                                if (attachment.attributes['sizes']['fts_thumb']) {
-                                    var ftgImageThumb = attachment.attributes['sizes']['fts_thumb']['url'];
-                                    // alert('fts_thumb')
-                                    // console.log('fts_thumb');
+                                if (attachment.attributes['sizes']['ft_gallery_thumb']) {
+                                    var ftgImageThumb = attachment.attributes['sizes']['ft_gallery_thumb']['url'];
+                                    // alert('ft_gallery_thumb')
+                                    // console.log('ft_gallery_thumb');
                                 }
-                                // the fts_thumb image size was not created because it was added before our plugin was activated
+                                // the ft_gallery_thumb image size was not created because it was added before our plugin was activated
                                 else {
                                     var ftgImageThumb = attachment.attributes['sizes']['thumbnail']['url'];
-                                    // alert('wp thumbnail NOT an fts_thumb')
-                                    // console.log('wp thumbnail NOT an fts_thumb');
+                                    // alert('wp thumbnail NOT an ft_gallery_thumb')
+                                    // console.log('wp thumbnail NOT an ft_gallery_thumb');
                                 }
 
                                 jQuery( '#img1plupload-thumbs' ).prepend( '<li class="thumb" id="list_item_' + attachment.id + '" data-image-id="' + attachment.id + '"><img src="' + ftgImageThumb + '" alt="" /><div class="clear"></div></li>' );
@@ -134,11 +134,11 @@ jQuery( document ).ready(
                                 // console.log(attachment.attributes);
                                 // console.log(attachment.attributes['attachment']);
                                 // console.log(attachment.attributes['html']);
-                                // console.log(attachment.attributes['sizes']['fts_thumb']);
+                                // console.log(attachment.attributes['sizes']['ft_gallery_thumb']);
                                 jQuery.ajax(
                                     {
                                         data: {
-                                            'action': "fts_edit_image_ajax",
+                                            'action': "ft_gallery_edit_image_ajax",
                                             // submit our values to function simple_das_fep_add_post
                                             'id': attachment.id ,
                                             'postID': jQuery( '#img1plupload-thumbs' ).attr( 'data-post-id' ) ,
@@ -187,7 +187,7 @@ jQuery( document ).ready(
         );
 
 
-        if ( jQuery('div.ft-gallery-popup-form').hasClass('ftg-premium-active')  ) {
+        if ( jQuery('div.ft-gallery-popup-form').hasClass('ftg-premium-active') ||  jQuery('body').hasClass('post-type-ft_gallery_albums') ) {
             jQuery('<div id="ftg-watermark-logo-wrap"></div>').insertAfter('#ft-watermark-image');
         }
 
@@ -225,11 +225,11 @@ jQuery( document ).ready(
                         jQuery.ajax(
                             {
                                 data: {
-                                    'action': "fts_update_image_ajax",
+                                    'action': "ft_gallery_update_image_ajax",
                                     // submit our values to function simple_das_fep_add_post
                                     'id': attachment.id,
                                     'nonce': attachment.id,
-                                    'fts_img_remove': 'true'
+                                    'ft_gallery_img_remove': 'true'
                                 },
                                 type: 'POST',
                                 url: ssAjax.ajaxurl,
@@ -265,8 +265,7 @@ jQuery( document ).ready(
         }
 
         // Set as featured image hook (WP < 3.5):
-        $( 'a.wp-post-thumbnail' ).live(
-            'click',
+        $('body').on('click', 'a.wp-post-thumbnail',
             function (e) {
                 parent.tb_remove();
                 parent.location.reload( 1 );
@@ -274,8 +273,7 @@ jQuery( document ).ready(
         );
 
         // Set as featured image handler (WP >= 3.5):
-        $( 'a#insert-media-button' ).live(
-            'click',
+        $('body').on('click', 'a#insert-media-button',
             function () {
                 if (typeof wp !== 'undefined') {
                     var editor_id = $( '.wp-media-buttons:eq(0) .add_media' ).attr( 'data-editor' );
@@ -469,17 +467,17 @@ jQuery( document ).ready(
                             // The reason the process takes so long is because we are duplicating each product post and adding in the info, then doing that over and over. Servers with low memory or timelimits will suffer the most.
                             // One server I tested took over 3 hours to do 436 products. So if you really want to sell photos and get things done quickly then make sure your server is as nice as your Camera.
                             // We do this check with either the hassclass method or if the checkbox is checked because if you are using ajax to save the page the class may not have been applied yet.
-                            var ftgGlobalValue           = jQuery( "select#fts_image_to_woo_model_prod" ).val();
-                            var ftgLandscapeValue        = jQuery( "select#fts_landscape_to_woo_model_prod" ).val();
-                            var ftgSquareValue           = jQuery( "select#fts_square_to_woo_model_prod" ).val();
-                            var ftgPortraitValue         = jQuery( "select#fts_portrait_to_woo_model_prod" ).val();
-                            var ftgorientationValueCheck = jQuery( "#fts_smart_image_orient_prod" ).is( ':checked' );
+                            var ftgGlobalValue           = jQuery( "select#ft_gallery_image_to_woo_model_prod" ).val();
+                            var ftgLandscapeValue        = jQuery( "select#ft_gallery_landscape_to_woo_model_prod" ).val();
+                            var ftgSquareValue           = jQuery( "select#ft_gallery_square_to_woo_model_prod" ).val();
+                            var ftgPortraitValue         = jQuery( "select#ft_gallery_portrait_to_woo_model_prod" ).val();
+                            var ftgorientationValueCheck = jQuery( "#ft_gallery_smart_image_orient_prod" ).is( ':checked' );
 
                             console.log( ftgGlobalValue );
-                            if (jQuery( "#uploaderSection" ).hasClass( "ftg-auto-create-product-on-upload" ) || jQuery( "#fts_auto_image_woo_prod" ).is( ':checked' )) {
+                            if (jQuery( "#uploaderSection" ).hasClass( "ftg-auto-create-product-on-upload" ) || jQuery( "#ft_gallery_auto_image_woo_prod" ).is( ':checked' )) {
 
                                 if (ftgGlobalValue || ftgLandscapeValue && ftgSquareValue && ftgPortraitValue && ftgorientationValueCheck) {
-                                    fts_image_to_woo_on_upload( response['id'], jQuery( '#img1plupload-thumbs' ).attr( 'data-post-id' ) );
+                                    ft_gallery_image_to_woo_on_upload( response['id'], jQuery( '#img1plupload-thumbs' ).attr( 'data-post-id' ) );
                                     jQuery( '#ftg-tab-content1 .ft-gallery-notice' ).removeClass( 'error' );
                                     jQuery( '#ftg-tab-content1 .ft-gallery-notice' ).removeClass( 'ftg-block' );
                                     jQuery( '#ftg-tab-content1 .ft-gallery-notice' ).html( '' );

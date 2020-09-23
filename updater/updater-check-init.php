@@ -35,7 +35,7 @@ class updater_init {
             //Store URL is where the premium plugins are located.
             'store_url' => 'https://www.slickremix.com/',
             //Menu Slug for the plugin the update license page will be added to.
-            'main_menu_slug' => 'edit.php?post_type=fts',
+            'main_menu_slug' => 'edit.php?post_type=fts_feeds',
             //Slug to be used for license page
             'license_page_slug' => 'ft-gallery-license-page',
             //Settings Section name for license page options
