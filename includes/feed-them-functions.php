@@ -9,6 +9,7 @@ namespace feedthemsocial;
  */
 class feed_them_social_functions {
 
+    public $data_protection;
 
 	/**
 	 * Construct
@@ -17,7 +18,8 @@ class feed_them_social_functions {
 	 *
 	 * @since 1.9.6
 	 */
-	public function __construct() {
+	public function __construct( ) {
+
 		$root_file                       = plugin_dir_path( dirname( __FILE__ ) );
 		$this->premium                   = str_replace( 'feed-them-social/', 'feed-them-premium/', $root_file );
 		$this->facebook_carousel_premium = str_replace( 'feed-them-social/', 'feed-them-carousel-premium/', $root_file );
@@ -54,6 +56,7 @@ class feed_them_social_functions {
 	 * @since 1.9.6
 	 */
 	public function init() {
+
 		if ( is_admin() ) {
 			// Register Settings!
 			add_action( 'admin_init', array( $this, 'fts_settings_page_register_settings' ) );
@@ -2799,6 +2802,11 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 		return $data;
 	}
 
+
+
+
+
+
 	/**
 	 * FTS Create Feed Cache
 	 *
@@ -2810,6 +2818,10 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 */
 	public function fts_create_feed_cache( $transient_name, $response ) {
 
+        $encoded_json = json_encode($response);
+
+        $encrypted_json = $this->data_protection->encrypt($encoded_json);
+
 		// Is there old Cache? If so Delete it!
 		if ( true === $this->fts_check_feed_cache_exists( $transient_name ) ) {
 			// Make Sure to delete old permanent cache before setting up new cache!
@@ -2819,10 +2831,10 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 		$cache_time_limit = true === get_option( 'fts_clear_cache_developer_mode' ) && '1' !== get_option( 'fts_clear_cache_developer_mode' ) ? get_option( 'fts_clear_cache_developer_mode' ) : '900';
 
 		// Timed Cache.
-		set_transient( 'fts_t_' . $transient_name, $response, $cache_time_limit );
+		set_transient( 'fts_t_' . $transient_name, $encrypted_json, $cache_time_limit );
 
 		// Permanent Feed cache. NOTE set to 0.
-		set_transient( 'fts_p_' . $transient_name, $response, 0 );
+		set_transient( 'fts_p_' . $transient_name, $encrypted_json, 0 );
 	}
 
 	/**
@@ -2834,14 +2846,21 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 * @since 1.9.6
 	 */
 	public function fts_get_feed_cache( $transient_name, $errored = null ) {
-
 		// If Error use Permanent Cache!
 		if ( true === $errored ) {
-			return get_transient( 'fts_p_' . $transient_name );
+			$trans = get_transient( 'fts_p_' . $transient_name );
 		}
+        else{
+            // If no error use Timed Cache!
+            $trans =  get_transient( 'fts_t_' . $transient_name );
+        }
 
-		// If no error use Timed Cache!
-		return get_transient( 'fts_t_' . $transient_name );
+        $decrypted_string = $this->data_protection->decrypt( $trans );
+
+        $decoded_json = json_decode($decrypted_string, true);
+
+        return $decoded_json;
+
 	}
 
 	/**

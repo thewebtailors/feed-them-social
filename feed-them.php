@@ -111,16 +111,17 @@ final class Feed_Them_Social {
             // Truncate HTML Class
             self::$instance->truncate_html = new FeedThemSocialTruncateHTML();
 
-            // FTS Custom Post Type
-            // self::$instance->fts_custom_post_type = new feedthemsocial\FTS_Custom_Post_Type();
+            // DATA PROTECTIOM
+            self::$instance->data_protection = new feedthemsocial\Data_Protection(); // Core (and load init)!
+
             // Core (and load init)!
-            self::$instance->core_functions = new feedthemsocial\feed_them_social_functions();
+            self::$instance->core_functions = new feedthemsocial\feed_them_social_functions( );
 
             // Free Plugin License page!
             self::$instance->updater = new feedthemsocial\updater_init();
 
             // Facebook!
-            self::$instance->facebook_feed = new feedthemsocial\FTS_Facebook_Feed();
+            self::$instance->facebook_feed = new feedthemsocial\FTS_Facebook_Feed( );
 
             // Twitter!
             self::$instance->twitter_feed = new feedthemsocial\FTS_Twitter_Feed();
@@ -304,9 +305,12 @@ final class Feed_Them_Social {
 
         include FEED_THEM_SOCIAL_PLUGIN_FOLDER_DIR . 'includes/error-handler.php';
 
+        //Data Protection
+        include FEED_THEM_SOCIAL_PLUGIN_FOLDER_DIR . 'admin/data-protection/data-protection.php';
+
         // Core classes!
         include FEED_THEM_SOCIAL_PLUGIN_FOLDER_DIR . 'includes/feed-them-functions.php';
-        $load_fts = new feedthemsocial\feed_them_social_functions();
+        $load_fts = new feedthemsocial\feed_them_social_functions( );
         $load_fts->init();
 
         // Admin Pages!

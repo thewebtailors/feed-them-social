@@ -20,13 +20,14 @@ namespace feedthemsocial;
  */
 class FTS_Facebook_Options_Page {
 
+
 	/** * Construct
 	 *
 	 * Facebook Style Options Page constructor.
 	 *
 	 * @since 1.9.6
 	 */
-	public function __construct() {
+	public function __construct(  ) {
 
 	}
 

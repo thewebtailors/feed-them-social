@@ -7,6 +7,9 @@
  * @since 1.9.6
  */
 class FTS_Facebook_Feed extends feed_them_social_functions {
+
+    public $data_protection;
+
     /**
      * Construct
      *
@@ -14,7 +17,11 @@ class FTS_Facebook_Feed extends feed_them_social_functions {
      *
      * @since 1.9.6
      */
-    public function __construct() {
+    public function __construct( ) {
+
+        // Data Protection
+        $this->data_protection = new Data_Protection();
+
         add_shortcode( 'fts_facebook_group', array( $this, 'fts_fb_func' ) );
         add_shortcode( 'fts_facebook_page', array( $this, 'fts_fb_func' ) );
         add_shortcode( 'fts_facebook_event', array( $this, 'fts_fb_func' ) );
