@@ -25,6 +25,9 @@ class feed_them_social_functions {
 		$this->facebook_carousel_premium = str_replace( 'feed-them-social/', 'feed-them-carousel-premium/', $root_file );
 		$this->facebook_reviews          = str_replace( 'feed-them-social/', 'feed-them-social-facebook-reviews/', $root_file );
 
+        // Data Protection
+        $this->data_protection = new Data_Protection();
+
 		// FTS Activation Function. Commenting out for future use. SRL!
 		register_deactivation_hook( __FILE__, array( $this, 'fts_get_check_plugin_version' ) );
 		// Widget Code!
@@ -34,6 +37,8 @@ class feed_them_social_functions {
 			add_action( 'init', array( $this, 'fts_clear_cache_script' ) );
 			add_action( 'wp_head', array( $this, 'my_fts_ajaxurl' ) );
 			add_action( 'wp_ajax_fts_clear_cache_ajax', array( $this, 'fts_clear_cache_ajax' ) );
+
+
 		}
 		add_action( 'wp_ajax_fts_refresh_token_ajax', array( $this, 'fts_refresh_token_ajax' ) );
 		add_action( 'wp_ajax_fts_instagram_token_ajax', array( $this, 'fts_instagram_token_ajax' ) );
@@ -107,7 +112,48 @@ class feed_them_social_functions {
 		}
 	}
 
-	/**
+    /**
+     * Get Facebook Custom API Access Token
+     *
+     * @return mixed
+     * @since 1.9.6
+     */
+    public function get_fb_access_token() {
+        return $this->data_protection->decrypt( get_option( 'fts_facebook_custom_api_token' ) );
+    }
+
+    /**
+     * Get Facebook Biz API Access Token
+     *
+     * @return mixed
+     * @since 1.9.6
+     */
+    public function get_fb_biz_access_token() {
+        return $this->data_protection->decrypt( get_option( 'fts_facebook_custom_api_token_biz' ) );
+    }
+
+
+    /**
+     * Get Facebook Biz API Access Token
+     *
+     * @return mixed
+     * @since 1.9.6
+     */
+    public function get_fts_instagram_custom_api_token() {
+        return $this->data_protection->decrypt( get_option( 'fts_instagram_custom_api_token' ) );
+    }
+
+    /**
+     * Get Facebook Biz API Access Token
+     *
+     * @return mixed
+     * @since 1.9.6
+     */
+    public function get_ig_fb_biz_access_token() {
+        return $this->data_protection->decrypt( get_option( 'fts_facebook_instagram_custom_api_token' ) );
+    }
+
+    /**
 	 * FTS Instagram Token Ajax
 	 *
 	 * This will save the returned token to the database.
@@ -122,8 +168,9 @@ class feed_them_social_functions {
 
 		if ( wp_verify_nonce( $fts_refresh_token_nonce, 'fts_token_nonce' ) ) {
 			if ( isset( $access_token ) ) {
-				update_option( 'fts_instagram_custom_api_token', sanitize_text_field( $access_token ) );
-				// $insta_id = substr( $access_token, 0, strpos( $access_token, '.' ) );
+                // Encrypt Access Token
+                $encrypted_token = $this->data_protection->encrypt( $access_token );
+				update_option( 'fts_instagram_custom_api_token', sanitize_text_field( $encrypted_token ) );
 				update_option( 'fts_instagram_custom_id', sanitize_text_field( $user_id ) );
 			}
 		}
@@ -143,16 +190,16 @@ class feed_them_social_functions {
 		$fts_refresh_token_nonce = wp_create_nonce( 'access_token' );
 
 		if ( wp_verify_nonce( $fts_refresh_token_nonce, 'access_token' ) ) {
-
-			$auth_obj  = $_GET['code'];
+            $raw_token  = $_GET['code'];
+            $encrypted_token = $this->data_protection->encrypt( $_GET['code'] );
 			$feed_type = $_GET['feed_type'];
 			$user_id   = $_GET['user_id'];
 
-			if ( isset( $auth_obj ) && 'original_instagram' === $feed_type || isset( $auth_obj ) && 'instagram_basic' === $feed_type ) {
+			if ( isset( $raw_token ) && 'original_instagram' === $feed_type || isset( $raw_token ) && 'instagram_basic' === $feed_type ) {
 				?>
 				<script>
 					jQuery(document).ready(function () {
-						var access_token = '<?php echo sanitize_text_field( $auth_obj ); ?>';
+						var access_token = '<?php echo sanitize_text_field( $encrypted_token ); ?>';
 						var user_id = '<?php echo sanitize_text_field( $user_id ); ?>';
 
 						jQuery.ajax({
@@ -165,13 +212,9 @@ class feed_them_social_functions {
 							url: ftsAjax.ajaxurl,
 							success: function (response) {
 								<?php
-								$auth_obj = $_GET['code'];
-								if ( 'instagram_basic' === $feed_type ) {
-									$insta_url = esc_url_raw( 'https://graph.instagram.com/me?fields=id,username&access_token=' . $auth_obj );
-								} else {
-									$insta_url = esc_url( 'https://api.instagram.com/v1/users/self/?access_token=' . $auth_obj );
-								}
-								// Get Data for Instagram to check for errors
+                                $insta_url = 'instagram_basic' === $feed_type ? esc_url_raw( 'https://graph.instagram.com/me?fields=id,username&access_token=' . $raw_token ) : esc_url( 'https://api.instagram.com/v1/users/self/?access_token=' . $raw_token );
+
+								// Get Data for Instagram to check for errors!
 								$response                = wp_remote_fopen( $insta_url );
 								$test_app_token_response = json_decode( $response );
 
@@ -363,7 +406,7 @@ class feed_them_social_functions {
 								</div>
 								<div class="page-token"><?php echo esc_attr( $data->access_token ); ?></div>
 						<?php
-						$facebook_input_token  = get_option( 'fts_facebook_custom_api_token' );
+						$facebook_input_token  = $this->get_fb_access_token();
 						$facebook_access_token = $data->access_token;
 						if ( $facebook_input_token === $facebook_access_token ) {
 							?>
@@ -430,7 +473,7 @@ class feed_them_social_functions {
 
 															<div class="page-token"><?php echo esc_html( $location->access_token ); ?></div>
 															<?php
-															$facebook_input_token  = get_option( 'fts_facebook_custom_api_token' );
+															$facebook_input_token  = $this->get_fb_access_token();
 															$facebook_access_token = $location->access_token;
 															if ( $facebook_input_token === $facebook_access_token ) {
 																?>
@@ -891,7 +934,7 @@ class feed_them_social_functions {
 			wp_enqueue_script( 'fts_clear_cache_script', plugins_url( 'feed-them-social/admin/js/developer-admin.js' ), array( 'jquery' ), FTS_CURRENT_VERSION, false );
 			wp_localize_script( 'fts_clear_cache_script', 'ftsAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 			wp_enqueue_script( 'fts_clear_cache_script' );
-		}
+        }
 
 		// we delete this option if found so we only empty the cache once when the plugin is ever activated or updated!
 		delete_option( 'Feed_Them_Social_Activated_Plugin' );
@@ -2105,11 +2148,11 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 				$output = '<form class="feed-them-social-admin-form shortcode-generator-form fb-page-shortcode-form" id="fts-fb-page-form">';
 
 				// Check to see if token is in place otherwise show a message letting person no what they need to do!
-				$facebook_options = get_option( 'fts_facebook_custom_api_token' ) ? 'Yes' : 'No';
+				$facebook_options = $this->get_fb_access_token() ? 'Yes' : 'No';
 				$output          .= isset( $facebook_options ) && 'No' !== $facebook_options ? '' . "\n" : '<div class="feed-them-social-admin-input-wrap fts-required-token-message">Please get your Access Token on our <a href="admin.php?page=fts-facebook-feed-styles-submenu-page">Facebook Options</a> page.</div>' . "\n";
 				// end custom message for requiring token!
 				if ( is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) ) {
-					$facebook_options2 = get_option( 'fts_facebook_custom_api_token_biz' ) ? 'Yes' : 'No';
+					$facebook_options2 = $this->get_fb_biz_access_token() ? 'Yes' : 'No';
 					// Check to see if token is in place otherwise show a message letting person no what they need to do
 					// $output .= isset($facebook_options2) && $facebook_options2 !== 'No' ? '' . "\n" : '<div class="feed-them-social-admin-input-wrap fts-required-token-message">Please add a Facebook Page Reviews API Token to our <a href="admin.php?page=fts-facebook-feed-styles-submenu-page">Facebook Options</a> page before trying to view your Facebook Reviews feed.</div>' . "\n";
 					// end custom message for requiring token!
@@ -2803,10 +2846,6 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	}
 
 
-
-
-
-
 	/**
 	 * FTS Create Feed Cache
 	 *
@@ -2818,9 +2857,7 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 */
 	public function fts_create_feed_cache( $transient_name, $response ) {
 
-        $encoded_json = json_encode($response);
-
-        $encrypted_json = $this->data_protection->encrypt($encoded_json);
+        $encrypted_response = $this->data_protection->encrypt( $response );
 
 		// Is there old Cache? If so Delete it!
 		if ( true === $this->fts_check_feed_cache_exists( $transient_name ) ) {
@@ -2830,11 +2867,14 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 		// Cache Time set on Settings Page under FTS Tab.
 		$cache_time_limit = true === get_option( 'fts_clear_cache_developer_mode' ) && '1' !== get_option( 'fts_clear_cache_developer_mode' ) ? get_option( 'fts_clear_cache_developer_mode' ) : '900';
 
-		// Timed Cache.
-		set_transient( 'fts_t_' . $transient_name, $encrypted_json, $cache_time_limit );
+        //Check an Encrypted Response was returned.
+        if( $encrypted_response ){
+            // Timed Cache.
+            set_transient( 'fts_t_' . $transient_name, $encrypted_response, $cache_time_limit );
 
-		// Permanent Feed cache. NOTE set to 0.
-		set_transient( 'fts_p_' . $transient_name, $encrypted_json, 0 );
+            // Permanent Feed cache. NOTE set to 0.
+            set_transient( 'fts_p_' . $transient_name, $encrypted_response, 0 );
+        }
 	}
 
 	/**
@@ -2855,12 +2895,7 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
             $trans =  get_transient( 'fts_t_' . $transient_name );
         }
 
-        $decrypted_string = $this->data_protection->decrypt( $trans );
-
-        $decoded_json = json_decode($decrypted_string, true);
-
-        return $decoded_json;
-
+        return $this->data_protection->decrypt( $trans );
 	}
 
 	/**
@@ -2911,15 +2946,49 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 * @return string
 	 * @since 1.9.6
 	 */
-	public function feed_them_clear_cache() {
+	public function feed_them_clear_admin_cache() {
 		global $wpdb;
 		// Clear UnExpired Timed Cache!
-		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_fts_t_%' ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", 'fts_facebook_%' ) );
 		// Clear Expired Timed Cache!
-		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_timeout_fts_t_%' ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", 'fts_instagram_%' ) );
 		wp_reset_query();
-		return 'Cache for ALL FTS Feeds cleared!';
+		return 'Cache for ALL FTS Admin Options cleared!';
 	}
+
+    /**
+     * Feed Them Clear Instagram Token.
+     *
+     * Clear ALL FTS Cache.
+     *
+     * @return string
+     * @since 1.9.6
+     */
+    public function feed_them_clear_ig_token() {
+        global $wpdb;
+        // Clear Expired Timed Cache!
+        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", 'fts_facebook_instagram_custom_api_token' ) );
+        wp_reset_query();
+        return 'Cache for ALL FTS Admin Options cleared!';
+    }
+
+    /**
+     * Feed Them Clear Cache
+     *
+     * Clear ALL FTS Cache.
+     *
+     * @return string
+     * @since 1.9.6
+     */
+    public function feed_them_clear_cache() {
+        global $wpdb;
+        // Clear UnExpired Timed Cache!
+        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_fts_t_%' ) );
+        // Clear Expired Timed Cache!
+        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_timeout_fts_t_%' ) );
+        wp_reset_query();
+        return 'Cache for ALL FTS Feeds cleared!';
+    }
 
 	/**
 	 * Delete permanent feed Cache
@@ -2938,7 +3007,6 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 		wp_reset_query();
 		return 'Cache for this feed cleared!';
 	}
-
 
 	/**
 	 * FTS Admin Bar Menu
@@ -2978,6 +3046,7 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 					'parent' => 'feed_them_social_admin_bar',
 					'title'  => __( 'Clear Cache', 'feed-them-social' ),
 					'href'   => '#',
+                    'meta' => array('onclick' => 'fts_ClearCache();') //JavaScript function trigger just as an example.
 				)
 			);
 		}

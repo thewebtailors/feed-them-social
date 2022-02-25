@@ -432,6 +432,7 @@ final class Feed_Them_Social {
             $activation_options = array(
                 'fts-date-and-time-format'       => 'one-day-ago',
                 'fts_clear_cache_developer_mode' => '86400',
+                'fts_admin_bar_menu' => 'show-admin-bar-menu',
             );
 
             foreach ( $activation_options as $option_key => $option_value ) {

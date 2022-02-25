@@ -169,12 +169,7 @@ class FTS_Facebook_Feed extends feed_them_social_functions {
         }
 
         // Get Access Token.
-        $access_token = isset( $fb_shortcode['access_token'] ) ? $fb_shortcode['access_token'] : '';
-        if ( ! empty( $access_token ) ) {
-            $access_token = $fb_shortcode['access_token'];
-        } else {
-            $access_token = $this->get_access_token();
-        }
+        $access_token = $fb_shortcode['access_token'] ?? $this->get_fb_access_token();
 
         // UserName?.
         if ( ! $fb_shortcode['id'] ) {
@@ -317,7 +312,7 @@ class FTS_Facebook_Feed extends feed_them_social_functions {
             } elseif ( ! empty( $fb_shortcode['access_token'] ) ) {
                 $biz_access_token = $fb_shortcode['access_token'];
             } else {
-                $biz_access_token = get_option( 'fts_facebook_custom_api_token_biz' );
+                $biz_access_token = $this->get_fb_biz_access_token();
             }
 
             // Get Response (AKA Page & Feed Information) ERROR CHECK inside this function.
@@ -1475,36 +1470,6 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
     }
 
     /**
-     * Get Access Token
-     *
-     * @return mixed
-     * @since 1.9.6
-     */
-    public function get_access_token() {
-        // The API Access Token.
-        // $custom_access_token = get_option('fts_facebook_custom_api_token');
-        // if (!empty($custom_access_token)) {
-        // return $access_token;
-        // } else {
-        // Randomizer
-        // $values = array(
-        // '431287540548931|4A23YYIFqhd-gpz_E4Fy6U_Seo0',
-        // '1748446362151826|epVUmLiKT8QhLN63iRvvXXHwxqk',
-        // '1875381106044241|KmWz3mtzGye0M5HTdX0SK7rqpIU',
-        // '754106341419549|AMruxCJ_ly8825VXeLhBKo_kOfs',
-        // '438563519819257|1GJ8GLl1AQ7ZTvXV_Xpok_QpH6s',
-        // '753693994788276|xm_PXoNRWW8WPQdcQArRpBgWn5Q',
-        // '644818402385988|sABEvG0QiOaJRlNLC2NphfQLlfg',
-        // '292500071162951|9MA-kzWVs6HTEybpdxKjgF_gqeo',
-        // '263710677420086|Jpui2CFig7RbtdHaHPN_fiEa77U',
-        // '1850081601881384|u2JcPCn7TH40MY5BwC-i4PMHGm8',
-        // );
-        // $access_token = $values[array_rand($values, 1)];.
-        return get_option( 'fts_facebook_custom_api_token' );
-        // }
-    }
-
-    /**
      * Get View Link
      *
      * @param string $fb_shortcode The facebook feed shortcode.
@@ -2129,7 +2094,7 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
             // we check to see if the loadmore count number is set and if so pass that as the new count number when fetching the next set of posts.
             $_REQUEST['next_url'] = '' !== $loadmore_count ? str_replace( "limit=$posts", "limit=$loadmore_count", $next_url ) : $next_url;
 
-            $access_token         = is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) ? 'access_token=' . get_option( 'fts_facebook_custom_api_token_biz' ) : 'access_token=' . get_option( 'fts_facebook_custom_api_token' );
+            $access_token         = is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) ? 'access_token=' . $this->get_fb_biz_access_token() : 'access_token=' . $this->get_fb_biz_access_token();
             $_REQUEST['next_url'] = str_replace( $access_token, 'access_token=XXX', $next_url );
 
             echo '<script>';

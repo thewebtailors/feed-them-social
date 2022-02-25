@@ -1,5 +1,9 @@
 <?php namespace feedthemsocial;
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) )
+    exit;
+
 /**
  * Class responsible for encrypting and decrypting data.
  *
@@ -36,7 +40,15 @@ class Data_Protection {
     }
 
 
-        public function encrypt( $value ) {
+    /**
+     * Encrypt.
+     *
+     * Encrypt the data.
+     *
+     * @param $value
+     * @return false|mixed|string
+     */
+    public function encrypt($value ) {
         if ( ! extension_loaded( 'openssl' ) ) {
             return $value;
         }
@@ -45,36 +57,49 @@ class Data_Protection {
         $ivlen  = openssl_cipher_iv_length( $method );
         $iv     = openssl_random_pseudo_bytes( $ivlen );
 
-        $raw_value = openssl_encrypt( $value . $this->salt, $method, $this->key, 0, $iv );
-        if ( ! $raw_value ) {
+        if( is_object($value) ) {
+            $value =  json_encode($value);
+        }
+
+        $encrypted_value = openssl_encrypt( $value . $this->salt, $method, $this->key, 0, $iv );
+        if ( ! $encrypted_value ) {
             return false;
         }
 
-        return base64_encode( $iv . $raw_value );
+        return base64_encode( $iv . $encrypted_value );
     }
 
-    public function decrypt( $raw_value ) {
+    /**
+     * Decrypt.
+     *
+     * Decrypt the data.
+     *
+     * @param $encrypted_value
+     * @return false|mixed|string
+     */
+    public function decrypt($encrypted_value ) {
         if ( ! extension_loaded( 'openssl' ) ) {
-            return $raw_value;
+            return $encrypted_value;
         }
 
-        $raw_value = base64_decode( $raw_value, true );
+        $encrypted_value = base64_decode( $encrypted_value, true );
 
         $method = 'aes-256-ctr';
         $ivlen  = openssl_cipher_iv_length( $method );
-        $iv     = substr( $raw_value, 0, $ivlen );
+        $iv     = substr( $encrypted_value, 0, $ivlen );
 
-        $raw_value = substr( $raw_value, $ivlen );
+        $encrypted_value = substr( $encrypted_value, $ivlen );
 
-        $value = openssl_decrypt( $raw_value, $method, $this->key, 0, $iv );
-        if ( ! $value || substr( $value, - strlen( $this->salt ) ) !== $this->salt ) {
+        $decrypted_value = openssl_decrypt( $encrypted_value, $method, $this->key, 0, $iv );
+        if ( ! $decrypted_value || substr( $decrypted_value, - strlen( $this->salt ) ) !== $this->salt ) {
             return false;
         }
 
-        $decrypted = substr( $value, 0, - strlen( $this->salt ) );
-        //error_log( print_r( $decrypted, true ) );
+        $decrypted_value = substr( $decrypted_value, 0, - strlen( $this->salt ) );
 
-        return $decrypted;
+        error_log( print_r( $decrypted_value, true ) );
+
+        return $decrypted_value;
     }
 
 
@@ -86,8 +111,11 @@ class Data_Protection {
      * @return string Default (not user-based) encryption key.
      */
     private function get_default_key() {
-        if ( defined( 'LOGGED_IN_KEY' ) && '' !== LOGGED_IN_KEY ) {
-            return LOGGED_IN_KEY;
+        if ( defined( 'AUTH_KEY' ) && '' !== AUTH_KEY ) {
+            //error_log( print_r( AUTH_KEY, true ) );
+            return AUTH_KEY;
+
+
         }
         return 'das-ist-kein-geheimer-schluessel';
     }
@@ -101,8 +129,8 @@ class Data_Protection {
      */
     private function get_default_salt() {
 
-        if ( defined( 'LOGGED_IN_SALT' ) && '' !== LOGGED_IN_SALT ) {
-            return LOGGED_IN_SALT;
+        if ( defined( 'AUTH_KEY' ) && '' !== AUTH_KEY ) {
+            return AUTH_KEY;
         }
 
         // If this is reached, you're either not on a live site or have a serious security issue.
