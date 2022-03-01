@@ -371,14 +371,14 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
             // Facebook/Instagram biz token.
             $fb_ig_custom_api_token_biz          =  $this->get_ig_fb_biz_access_token();
 
-			$fts_business_or_hashtag_check_token_type = '' === $access_token ? $fb_ig_custom_api_token_biz : $access_token;
-			$fts_check_token_type                     = '' === $access_token ? $fts_instagram_access_token : $access_token;
+			$fts_business_or_hashtag_check_token_type = $access_token ?? $fb_ig_custom_api_token_biz;
+			$fts_check_token_type                     = $access_token ?? $fts_instagram_access_token;
 			$fts_instagram_access_token               = 'hashtag' === $type || 'business' === $type ? $fts_business_or_hashtag_check_token_type : $fts_check_token_type;
 			$fts_instagram_show_follow_btn            = get_option( 'instagram_show_follow_btn' );
 			$fts_instagram_show_follow_btn_where      = get_option( 'instagram_show_follow_btn_where' );
 			if ( is_plugin_active( 'feed-them-premium/feed-them-premium.php' ) ) {
-				$instagram_load_more_text      = get_option( 'instagram_load_more_text' ) ? get_option( 'instagram_load_more_text' ) : __( 'Load More', 'feed-them-social' );
-				$instagram_no_more_photos_text = get_option( 'instagram_no_more_photos_text' ) ? get_option( 'instagram_no_more_photos_text' ) : __( 'No More Photos', 'feed-them-social' );
+				$instagram_load_more_text      = get_option( 'instagram_load_more_text' ) ?? __( 'Load More', 'feed-them-social' );
+				$instagram_no_more_photos_text = get_option( 'instagram_no_more_photos_text' ) ?? __( 'No More Photos', 'feed-them-social' );
 			}
 
 			// Make sure it's not ajaxing.

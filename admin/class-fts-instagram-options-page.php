@@ -53,20 +53,18 @@ class FTS_Instagram_Options_Page {
 
 
 
-        if ( isset( $_GET['code'] ) && empty( $fts_instagram_access_token) ) {
-            $encrypt_token                       =  $this->data_protection->encrypt( sanitize_text_field( $_GET['code'] ));
-
-            $fts_functions->feed_them_clear_ig_token();
+        if ( isset( $_GET['code'] ) ) {
+            $code_token                       =  sanitize_text_field( $_GET['code'] );
             ?>
             <script>
                 jQuery(document).ready(function ($) {
 
                     $('#fts_instagram_custom_api_token').val('');
-                    $('#fts_instagram_custom_api_token').val($('#fts_instagram_custom_api_token').val() + '<?php echo esc_js( $encrypt_token ); ?>');
+                    $('#fts_instagram_custom_api_token').val($('#fts_instagram_custom_api_token').val() + '<?php echo esc_js( $code_token ); ?>');
 
                     <?php if ( 'original_instagram' === $_GET['feed_type'] ){ ?>
                     $('#fts_instagram_custom_id').val('');
-                    var str = '<?php echo esc_js( $encrypt_token ); ?>';
+                    var str = '<?php echo esc_js( $code_token ); ?>';
                     $('#fts_instagram_custom_id').val($('#fts_instagram_custom_id').val() + str.split('.', 1));
                     <?php }
                     elseif ( 'instagram_basic' === $_GET['feed_type'] ){ ?>
@@ -279,7 +277,7 @@ class FTS_Instagram_Options_Page {
                             <?php esc_html_e( 'Access Token Required', 'feed-them-social' ); ?>
                         </div>
 
-                        <input type="text" name="fts_facebook_instagram_custom_api_token" class="feed-them-social-admin-input" id="fts_facebook_instagram_custom_api_token" value="<?php echo esc_attr( $test_app_token_id ); ?>"/>
+                        <input type="text" name="fts_facebook_instagram_custom_api_token" class="feed-them-social-admin-input" id="fts_facebook_instagram_custom_api_token" value="<?php echo esc_attr( $test_app_token_id_biz ); ?>"/>
                         <div class="clear"></div>
 
                         <input type="text" hidden name="fts_facebook_instagram_custom_api_token_user_name" class="feed-them-social-admin-input" id="fts_facebook_instagram_custom_api_token_user_name" value="<?php echo esc_attr( get_option( 'fts_facebook_instagram_custom_api_token_user_name' ) ); ?>"/>

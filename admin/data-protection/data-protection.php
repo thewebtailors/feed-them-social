@@ -39,7 +39,6 @@ class Data_Protection {
         $this->salt = $this->get_default_salt();
     }
 
-
     /**
      * Encrypt.
      *
@@ -49,8 +48,8 @@ class Data_Protection {
      * @return false|mixed|string
      */
     public function encrypt($value ) {
-        if ( ! extension_loaded( 'openssl' ) ) {
-            return $value;
+        if ( ! extension_loaded( 'openssl' ) || empty( $value ) ) {
+            return false;
         }
 
         $method = 'aes-256-ctr';
@@ -66,6 +65,8 @@ class Data_Protection {
             return false;
         }
 
+        //error_log( print_r( $encrypted_value, true ) );
+
         return base64_encode( $iv . $encrypted_value );
     }
 
@@ -78,8 +79,8 @@ class Data_Protection {
      * @return false|mixed|string
      */
     public function decrypt($encrypted_value ) {
-        if ( ! extension_loaded( 'openssl' ) ) {
-            return $encrypted_value;
+        if ( ! extension_loaded( 'openssl' ) || empty( $encrypted_value ) ) {
+            return false;
         }
 
         $encrypted_value = base64_decode( $encrypted_value, true );
@@ -97,11 +98,10 @@ class Data_Protection {
 
         $decrypted_value = substr( $decrypted_value, 0, - strlen( $this->salt ) );
 
-        error_log( print_r( $decrypted_value, true ) );
+        //error_log( print_r( $decrypted_value, true ) );
 
         return $decrypted_value;
     }
-
 
     /**
      * Gets the default encryption key to use.

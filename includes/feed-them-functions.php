@@ -168,9 +168,7 @@ class feed_them_social_functions {
 
 		if ( wp_verify_nonce( $fts_refresh_token_nonce, 'fts_token_nonce' ) ) {
 			if ( isset( $access_token ) ) {
-                // Encrypt Access Token
-                $encrypted_token = $this->data_protection->encrypt( $access_token );
-				update_option( 'fts_instagram_custom_api_token', sanitize_text_field( $encrypted_token ) );
+				update_option( 'fts_instagram_custom_api_token', sanitize_text_field( $access_token ) );
 				update_option( 'fts_instagram_custom_id', sanitize_text_field( $user_id ) );
 			}
 		}
@@ -191,12 +189,16 @@ class feed_them_social_functions {
 
 		if ( wp_verify_nonce( $fts_refresh_token_nonce, 'access_token' ) ) {
             $raw_token  = $_GET['code'];
-            $encrypted_token = $this->data_protection->encrypt( $_GET['code'] );
 			$feed_type = $_GET['feed_type'];
 			$user_id   = $_GET['user_id'];
 
+
+
 			if ( isset( $raw_token ) && 'original_instagram' === $feed_type || isset( $raw_token ) && 'instagram_basic' === $feed_type ) {
-				?>
+                $encrypted_token = $this->data_protection->encrypt( $raw_token );
+                error_log( print_r( $encrypted_token, true ) );
+
+                ?>
 				<script>
 					jQuery(document).ready(function () {
 						var access_token = '<?php echo sanitize_text_field( $encrypted_token ); ?>';
@@ -675,6 +677,7 @@ class feed_them_social_functions {
 					$(fb).click(function () {
 						var fb_page_id = $(this).find('.fts-api-facebook-id').html();
 						var token = $(this).find('.page-token').html();
+
 						// alert(token);
 						var name = $(this).find('.fb-name').html();
 						var profile_image = $(this).find('.fb-image img').attr('src');
@@ -1242,7 +1245,7 @@ class feed_them_social_functions {
 			'instagram_loadmore_text_color',
 			'instagram_load_more_text',
 			'instagram_no_more_photos_text',
-			'fts_facebook_instagram_custom_api_token',
+			//'fts_facebook_instagram_custom_api_token',
 			'fts_facebook_instagram_custom_api_token_user_id',
 			'fts_facebook_instagram_custom_api_token_user_name',
 			'fts_facebook_instagram_custom_api_token_profile_image',
@@ -2967,7 +2970,7 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
     public function feed_them_clear_ig_token() {
         global $wpdb;
         // Clear Expired Timed Cache!
-        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", 'fts_facebook_instagram_custom_api_token' ) );
+        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", 'fts_instagram_custom_api_token' ) );
         wp_reset_query();
         return 'Cache for ALL FTS Admin Options cleared!';
     }
