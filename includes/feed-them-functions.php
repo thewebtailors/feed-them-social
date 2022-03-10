@@ -117,41 +117,57 @@ class feed_them_social_functions {
      * Get Facebook Custom API Access Token
      *
      * @return mixed
-     * @since 1.9.6
+     * @since 2.9.7.2
      */
     public function get_fb_access_token() {
-        return $this->data_protection->decrypt( get_option( 'fts_facebook_custom_api_token' ) );
+        //Facebook.
+        $token           = get_option( 'fts_facebook_custom_api_token' );
+        $value = false !== $this->data_protection->decrypt( $token ) ? $this->data_protection->decrypt( $token ) : $token;
+
+        return $value;
     }
 
     /**
-     * Get Facebook Biz API Access Token
+     * Get Facebook Reviews API Access Token
      *
      * @return mixed
-     * @since 1.9.6
+     * @since 2.9.7.2
      */
     public function get_fb_biz_access_token() {
-        return $this->data_protection->decrypt( get_option( 'fts_facebook_custom_api_token_biz' ) );
+        //Facebook Reviews.
+        $reviews_token   = get_option( 'fts_facebook_custom_api_token_biz' );
+        $value = false !== $this->data_protection->decrypt( $reviews_token ) ? $this->data_protection->decrypt( $reviews_token ) : $reviews_token;
+
+        return $value;
     }
 
 
     /**
-     * Get Facebook Biz API Access Token
+     * Get Instagram Basic Access Token
      *
      * @return mixed
-     * @since 1.9.6
+     * @since 2.9.7.2
      */
     public function get_fts_instagram_custom_api_token() {
-        return $this->data_protection->decrypt( get_option( 'fts_instagram_custom_api_token' ) );
+        //Instagram Basic.
+        $basic_token     = get_option( 'fts_instagram_custom_api_token' );
+        $value = false !== $this->data_protection->decrypt( $basic_token ) ? $this->data_protection->decrypt( $basic_token ) : $basic_token;
+
+        return $value;
     }
 
     /**
-     * Get Facebook Biz API Access Token
+     * Get Instagram Business API Access Token
      *
      * @return mixed
      * @since 1.9.6
      */
     public function get_ig_fb_biz_access_token() {
-        return $this->data_protection->decrypt( get_option( 'fts_facebook_instagram_custom_api_token' ) );
+        //Instagram Business.
+        $business_token  = get_option( 'fts_facebook_instagram_custom_api_token' );
+        $value = false !== $this->data_protection->decrypt( $business_token ) ? $this->data_protection->decrypt( $business_token ) : $business_token;
+
+        return $value;
     }
 
     /**
@@ -176,7 +192,50 @@ class feed_them_social_functions {
 		die;
 	}
 
-	/**
+    /**
+     * FTS Instagram Token Ajax
+     *
+     * SRL: This will save the encrypted version of the token to the database and return the original token to the input field upon page submit.
+     *
+     * @since 2.9.7.2
+     */
+    public function fts_encrypt_token_ajax() {
+
+        $fts_refresh_token_nonce = wp_create_nonce( 'fts_encrypt_token_nonce' );
+        $access_token            = $_REQUEST['access_token'];
+        $encrypt                 = $this->data_protection->encrypt( $access_token );
+
+        if ( wp_verify_nonce( $fts_refresh_token_nonce, 'fts_encrypt_token_nonce' ) ) {
+            if( 'business' === $_REQUEST['token_type'] ){
+                // Now the encrypted version is saved to the DB.
+                update_option( 'fts_facebook_instagram_custom_api_token', sanitize_text_field( $encrypt ) );
+            }
+            elseif ( 'basic' === $_REQUEST['token_type'] ) {
+                // Now the encrypted version is saved to the DB.
+                update_option( 'fts_instagram_custom_api_token', sanitize_text_field( $encrypt ) );
+            }
+            elseif( 'fbBusiness' === $_REQUEST['token_type'] ){
+                // Now the encrypted version is saved to the DB.
+                update_option( 'fts_facebook_custom_api_token', sanitize_text_field( $encrypt ) );
+            }
+            elseif( 'fbBusinessReviews' === $_REQUEST['token_type'] ){
+                // Now the encrypted version is saved to the DB.
+                update_option( 'fts_facebook_custom_api_token_biz', sanitize_text_field( $encrypt ) );
+            }
+        }
+        $token_data = array (
+                'token'      => $access_token,
+                'encrypted'  => $encrypt,
+        );
+
+        // We pass the original access token back so we can add it to our input field.
+        // Also passing the encrypted token so we can see it in the console.
+        echo json_encode( $token_data );
+
+        wp_die();
+    }
+
+    /**
 	 * Feed Them Instagram Save Token
 	 *
 	 * FTS Check and Save Instagram Token Validity.
@@ -190,18 +249,19 @@ class feed_them_social_functions {
 
 		if ( wp_verify_nonce( $fts_refresh_token_nonce, 'access_token' ) ) {
             $raw_token  = $_GET['code'];
-			$feed_type = $_GET['feed_type'];
-			$user_id   = $_GET['user_id'];
+			$feed_type  = $_GET['feed_type'];
+			$user_id    = $_GET['user_id'];
 
 
 
 			if ( isset( $raw_token ) && 'original_instagram' === $feed_type || isset( $raw_token ) && 'instagram_basic' === $feed_type ) {
                 $encrypted_token = $this->data_protection->encrypt( $raw_token );
-                error_log( print_r( $encrypted_token, true ) );
+              //  error_log( print_r( $encrypted_token, true ) );
 
                 ?>
 				<script>
 					jQuery(document).ready(function () {
+
 						var access_token = '<?php echo sanitize_text_field( $encrypted_token ); ?>';
 						var user_id = '<?php echo sanitize_text_field( $user_id ); ?>';
 
@@ -257,7 +317,7 @@ class feed_them_social_functions {
 									<?php
 								}
 								?>
-								console.log( 'success saving instagram access token' );
+								console.log( 'success saving instagram access token: Encrypted Token: <?php echo $encrypted_token ?>' );
 							}
 						}); // end of ajax()
 						return false;
@@ -665,8 +725,8 @@ class feed_them_social_functions {
 						<?php if ( 'fts-facebook-feed-styles-submenu-page' === $_GET['page'] ) { ?>
 							$("#fts-facebook-feed-options-form").submit();
 							<?php
-} elseif ( 'fts-instagram-feed-styles-submenu-page' === $_GET['page'] ) {
-	?>
+                        } elseif ( 'fts-instagram-feed-styles-submenu-page' === $_GET['page'] ) {
+	                    ?>
 							$("#fts-instagram-feed-options-form").submit();
 						<?php } ?>
 					});
@@ -1246,7 +1306,7 @@ class feed_them_social_functions {
 			'instagram_loadmore_text_color',
 			'instagram_load_more_text',
 			'instagram_no_more_photos_text',
-			//'fts_facebook_instagram_custom_api_token',
+			'fts_facebook_instagram_custom_api_token',
 			'fts_facebook_instagram_custom_api_token_user_id',
 			'fts_facebook_instagram_custom_api_token_user_name',
 			'fts_facebook_instagram_custom_api_token_profile_image',
@@ -2861,7 +2921,18 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 */
 	public function fts_create_feed_cache( $transient_name, $response ) {
 
+        // YO! something is happening here that is not right. and on the class-fts-facebook-feed.php page.
+
+
+        echo '<br/><br/>Now we are in the create feed cache function. What is the response at this point just before we encrypt response.<br/>';
+        print_r($response);
+
         $encrypted_response = $this->data_protection->encrypt( $response );
+
+        echo '<br/><br/>#2 Now we have encrypted the data. What is the response at this point.<br/>';
+        print_r($encrypted_response);
+        echo '<br/><br/>#3 What is the decrypting response at this point.<br/>';
+        print_r($this->data_protection->decrypt( $encrypted_response ));
 
 		// Is there old Cache? If so Delete it!
 		if ( true === $this->fts_check_feed_cache_exists( $transient_name ) ) {
@@ -2874,11 +2945,12 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
         //Check an Encrypted Response was returned.
         if( $encrypted_response ){
             // Timed Cache.
-            set_transient( 'fts_t_' . $transient_name, $encrypted_response, $cache_time_limit );
+            set_transient( 'fts_t_' . $transient_name, $response, $cache_time_limit );
 
             // Permanent Feed cache. NOTE set to 0.
-            set_transient( 'fts_p_' . $transient_name, $encrypted_response, 0 );
+            set_transient( 'fts_p_' . $transient_name, $response, 0 );
         }
+
 	}
 
 	/**
@@ -2899,7 +2971,12 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
             $trans =  get_transient( 'fts_t_' . $transient_name );
         }
 
-        return $this->data_protection->decrypt( $trans );
+        echo '<br/>GET CACHE What is the response at this point:<br/>';
+        print_r($trans);
+
+        //return $trans;
+        // YO!
+        return false !== $this->data_protection->decrypt( $trans ) ? $this->data_protection->decrypt( $trans ) : $trans;
 	}
 
 	/**
