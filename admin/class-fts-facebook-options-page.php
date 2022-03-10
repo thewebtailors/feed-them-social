@@ -100,9 +100,24 @@ class FTS_Facebook_Options_Page {
 						</div>
 						<a href="<?php echo esc_url( 'mailto:support@slickremix.com' ); ?>" target="_blank" class="fts-admin-button-no-work"><?php esc_html_e( 'Button not working?', 'feed-them-social' ); ?></a>
 						<?php
-                        $fb_custom_api_token     =  $fts_functions->get_fb_access_token();
-                        $fb_custom_api_token_biz = $fts_functions->get_fb_biz_access_token();
-						if ( ! empty( $fb_custom_api_token ) || ! empty( $fb_custom_api_token_biz ) ) {
+
+                        //Facebook Business.
+                        $fb_custom_api_token   = get_option( 'fts_facebook_custom_api_token' );
+                        $fb_custom_encrypted   = $this->data_protection->decrypt( $fb_custom_api_token );
+                        $check_custom_token_value = false !== $fb_custom_encrypted ? $fb_custom_encrypted : $fb_custom_api_token;
+                        $check_custom_encrypted   = false !== $fb_custom_encrypted ? 'encrypted' : '';
+
+                        //Facebook Business Reviews.
+                        $fb_custom_api_token_biz   = get_option( 'fts_facebook_custom_api_token_biz' );
+                        $fb_custom_biz_encrypted   = $this->data_protection->decrypt( $fb_custom_api_token_biz );
+                        $check_custom_token_biz_value = false !== $fb_custom_biz_encrypted ? $fb_custom_biz_encrypted : $fb_custom_api_token_biz;
+                        $check_custom_biz_encrypted   = false !== $fb_custom_biz_encrypted ? 'encrypted' : '';
+
+                        if ( ! empty( $fb_custom_api_token ) || ! empty( $fb_custom_api_token_biz ) ) {
+
+                            $fb_custom_api_token     = $check_custom_token_value;
+                            $fb_custom_api_token_biz = $check_custom_token_biz_value;
+
 							$test_app_token_url     = array(
 								'app_token_id' => 'https://graph.facebook.com/debug_token?input_token=' . $fb_custom_api_token . '&access_token=' . $fb_custom_api_token,
 							);
@@ -128,7 +143,9 @@ class FTS_Facebook_Options_Page {
 								<?php esc_html_e( 'Access Token Required', 'feed-them-social' ); ?>
 							</div>
 
-							<input type="text" name="fts_facebook_custom_api_token" class="feed-them-social-admin-input" id="fts_facebook_custom_api_token" value="<?php echo esc_attr( $fb_custom_api_token ); ?>"/>
+                            <input type="text" name="fts_facebook_custom_api_token" class="feed-them-social-admin-input" id="fts_facebook_custom_api_token" data-token="<?php echo $check_custom_encrypted ?>" value="<?php echo $check_custom_token_value ?>" />
+
+
 							<div class="clear"></div>
 
 							<input type="text" hidden name="fts_facebook_custom_api_token_user_name" class="feed-them-social-admin-input" id="fts_facebook_custom_api_token_user_name" value="<?php echo esc_attr( get_option( 'fts_facebook_custom_api_token_user_name' ) ); ?>"/>
@@ -136,7 +153,8 @@ class FTS_Facebook_Options_Page {
 
 							<div class="clear"></div>
 							<?php
-							if ( ! empty( $test_app_token_response ) && ! empty( $fb_custom_api_token ) ) {
+
+                            if ( ! empty( $test_app_token_response ) && ! empty( $fb_custom_api_token ) ) {
 								if ( isset( $test_app_token_response->data->is_valid ) || '(#100) You must provide an app access token, or a user access token that is an owner or developer of the app' === $test_app_token_response->error->message ) {
 									$fb_id   = get_option( 'fts_facebook_custom_api_token_user_id' );
 									$fb_name = get_option( 'fts_facebook_custom_api_token_user_name' );
@@ -240,7 +258,7 @@ class FTS_Facebook_Options_Page {
 							<div class="feed-them-social-admin-input-label fts-twitter-border-bottom-color-label">
 								<?php esc_html_e( 'Page Reviews Access Token', 'feed-them-social' ); ?>
 							</div>
-							<input type="text" name="fts_facebook_custom_api_token_biz" class="feed-them-social-admin-input" id="fts_facebook_custom_api_token_biz" value="<?php echo esc_attr( $fb_custom_api_token_biz ); ?>"/>
+							<input type="text" name="fts_facebook_custom_api_token_biz" class="feed-them-social-admin-input" id="fts_facebook_custom_api_token_biz" data-token="<?php echo $check_custom_biz_encrypted ?>" value="<?php echo $check_custom_token_biz_value ?>" />
 							<input type="text" hidden name="fts_facebook_custom_api_token_user_name_biz" class="feed-them-social-admin-input" id="fts_facebook_custom_api_token_user_name_biz" value="<?php echo esc_attr( get_option( 'fts_facebook_custom_api_token_user_name_biz' ) ); ?>"/>
 							<input type="text" hidden name="fts_facebook_custom_api_token_biz_profile_image" class="feed-them-social-admin-input" id="fts_facebook_custom_api_token_biz_profile_image" value="<?php echo esc_attr( get_option( 'fts_facebook_custom_api_token_biz_profile_image' ) ); ?>"/>
 							<div class="clear"></div>

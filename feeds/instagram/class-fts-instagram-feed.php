@@ -366,19 +366,14 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
 			wp_enqueue_script( 'fts-global', plugins_url( 'feed-them-social/feeds/js/fts-global.js' ), array( 'jquery' ), FTS_CURRENT_VERSION, false );
 			$instagram_data_array = array();
 
-            // Instagram Access Token.
-            $fts_instagram_access_token          =  $this->get_fts_instagram_custom_api_token();
-            // Facebook/Instagram biz token.
-            $fb_ig_custom_api_token_biz          =  $this->get_ig_fb_biz_access_token();
-
-			$fts_business_or_hashtag_check_token_type = $access_token ?? $fb_ig_custom_api_token_biz;
-			$fts_check_token_type                     = $access_token ?? $fts_instagram_access_token;
+			$fts_business_or_hashtag_check_token_type = '' === $access_token ? $this->data_protection->decrypt( get_option( 'fts_facebook_instagram_custom_api_token' ) ) : $access_token;
+			$fts_check_token_type                     = '' === $access_token ? $this->data_protection->decrypt( get_option( 'fts_instagram_custom_api_token' ) ) : $access_token;
 			$fts_instagram_access_token               = 'hashtag' === $type || 'business' === $type ? $fts_business_or_hashtag_check_token_type : $fts_check_token_type;
 			$fts_instagram_show_follow_btn            = get_option( 'instagram_show_follow_btn' );
 			$fts_instagram_show_follow_btn_where      = get_option( 'instagram_show_follow_btn_where' );
 			if ( is_plugin_active( 'feed-them-premium/feed-them-premium.php' ) ) {
-				$instagram_load_more_text      = get_option( 'instagram_load_more_text' ) ?? __( 'Load More', 'feed-them-social' );
-				$instagram_no_more_photos_text = get_option( 'instagram_no_more_photos_text' ) ?? __( 'No More Photos', 'feed-them-social' );
+				$instagram_load_more_text      = get_option( 'instagram_load_more_text' ) ? get_option( 'instagram_load_more_text' ) : __( 'Load More', 'feed-them-social' );
+				$instagram_no_more_photos_text = get_option( 'instagram_no_more_photos_text' ) ? get_option( 'instagram_no_more_photos_text' ) : __( 'No More Photos', 'feed-them-social' );
 			}
 
 			// Make sure it's not ajaxing.
@@ -394,7 +389,11 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
 			ob_start();
 
 			// New method since Instagram API changes as of April 4th, 2018.
-            $fts_instagram_access_token_final = $access_token ?? $fts_instagram_access_token;
+			if ( '' === $access_token ) {
+				$fts_instagram_access_token_final = $fts_instagram_access_token;
+			} else {
+				$fts_instagram_access_token_final = $access_token;
+			}
 
 			if ( isset( $_REQUEST['next_url'] ) ) {
 				$_REQUEST['next_url'] = str_replace( 'access_token=XXX', 'access_token=' . $fts_instagram_access_token_final, $_REQUEST['next_url'] );
@@ -411,8 +410,7 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
 				// https://developers.facebook.com/docs/instagram-api/reference/hashtag/recent-media
 				// https://developers.facebook.com/docs/instagram-api/reference/hashtag/top-media
 
-
-				$cache_hashtag_id_array = 'instagram_cache_' . $instagram_id . '_num' . $pics_count . '_search' . $search . '_hash' . $hashtag . '';
+				$cache_hashtag_id_array = 'instagram_hashtag_id_cache_' . $instagram_id . '_num' . $pics_count . '_search' . $search . '_hash' . $hashtag . '';
 
 				if ( false === $this->fts_check_feed_cache_exists( $cache_hashtag_id_array ) ) {
 					// This call is required because users enter a hashtag name, then we have to check the API to see if it exists and if it does return the ID number for that hashtag.
@@ -422,16 +420,26 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
 
 					$hashtag_error_check = json_decode( $hashtag_response['data'] );
 
+                    /* echo '<br/><pre>';
+                    print_r( $hashtag_error_check );
+                    echo '</pre>';*/
+
 					foreach ( $hashtag_error_check->data as $ht ) {
 						$hashtag_id = $ht->id;
 					}
 
-					$this->fts_create_feed_cache( $cache_hashtag_id_array, $hashtag_response );
-				} else {
-					$response            = $this->fts_get_feed_cache( $cache_hashtag_id_array );
-					$hashtag_error_check = json_decode( $response['data'] );
+					$this->fts_create_feed_cache( $cache_hashtag_id_array, $hashtag_error_check );
 
-					foreach ( $hashtag_error_check->data as $ht ) {
+				} else {
+
+					$response            = $this->fts_get_feed_cache( $cache_hashtag_id_array );
+					$hashtag_error_check = json_decode( $response );
+
+                   /* echo '<br/><pre>';
+                    print_r( $hashtag_error_check);
+                    echo '</pre>';*/
+
+                   foreach ( $hashtag_error_check->data as $ht ) {
 						$hashtag_id = $ht->id;
 					}
 
@@ -447,7 +455,6 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
 				//  SRL: 01/19/21 Work around so we can load more than one hashtag shortcode on the same page that has the same user ID and pics_count otherwise it will be interpreted as
 				//  whatever the first shortcodes hashtag making all the feeds have the same photos.
 			    $pics_count .= '?1=' . $hashtag;
-
 
 				$hash_final_cache = 'instagram_final_cache_' . $instagram_id . '_num' . $pics_count . '_search' . $search . '_hash' . $hashtag . '';
 
@@ -512,7 +519,10 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
                             }
                       }
                     else {
-                         $insta_data = $this->fts_get_feed_cache( $hash_final_cache );
+
+                        $insta_data = $this->fts_get_feed_cache( $hash_final_cache );
+
+                        $insta_data = json_decode( $insta_data );
 
                        // echo 'eeeeeeeeeeee';
                         // Used for Testing Only.
@@ -537,7 +547,6 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
 					// First we make sure the feed is not cached already before trying to run the Instagram API.
                     if ( false === $this->fts_check_feed_cache_exists( $business_cache ) ) {
 
-
                             $instagram_business_response = $this->fts_get_feed_json( $instagram_data_array );
 
                             $instagram_business = json_decode( $instagram_business_response['data'] );
@@ -545,31 +554,15 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
                             // We loop through the media ids from the above $instagram_business_data_array['data'] and request the info for each to create an array we can cache.
                             $instagram_business_output = (object) [ 'data' => [] ];
 
-                        /*echo 'bbbbb';
-                            echo '<br/><pre>';
-                        	    print_r( $instagram_business );
-                        	echo '</pre>';*/
-
-
-                        foreach ( $instagram_business->data as $media ) {
-                            $media_id                              = $media->id;
-                            $instagram_business_data_array['data'] = 'https://graph.facebook.com/' . $media_id . '?fields=caption,comments_count,like_count,id,media_url,media_type,permalink,thumbnail_url,timestamp,username,children{media_url}&access_token=' . $fts_instagram_access_token_final;
-                            $instagram_business_media_response     = $this->fts_get_feed_json( $instagram_business_data_array );
-                            $instagram_business_media              = json_decode( $instagram_business_media_response['data'] );
-                            $instagram_business_output->data[]     = $instagram_business_media;
-                        }
+                            foreach ( $instagram_business->data as $media ) {
+                                $media_id                              = $media->id;
+                                $instagram_business_data_array['data'] = 'https://graph.facebook.com/' . $media_id . '?fields=caption,comments_count,like_count,id,media_url,media_type,permalink,thumbnail_url,timestamp,username,children{media_url}&access_token=' . $fts_instagram_access_token_final;
+                                $instagram_business_media_response     = $this->fts_get_feed_json( $instagram_business_data_array );
+                                $instagram_business_media              = json_decode( $instagram_business_media_response['data'] );
+                                $instagram_business_output->data[]     = $instagram_business_media;
+                            }
                             // The reason we array_merge the $instagram_business_output is because it contains the paging for next and previous links so we can loadmore posts
                             $insta_data = (object) array_merge( (array) $instagram_business, (array) $instagram_business_output );
-
-                       /* echo 'rrrrrrrrrrrr';
-                        	echo '<br/><pre>';
-                        	    print_r( $instagram_business_output );
-                        	echo '</pre>';
-
-                        	 echo 'ssssssss';
-                        	echo '<br/><pre>';
-                        	    print_r( $insta_data );
-                        	echo '</pre>';*/
 
                             if ( ! isset( $_GET['load_more_ajaxing'] ) ) {
                                 $this->fts_create_feed_cache( $business_cache, $insta_data );
@@ -579,7 +572,8 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
                     else {
                         $insta_data = $this->fts_get_feed_cache( $business_cache );
 
-                       // echo 'eeeeeeeeeeee';
+                        $insta_data = json_decode( $insta_data );
+
                         // Used for Testing Only.
                         if ( current_user_can( 'administrator' ) && 'true' === $debug ) {
                             esc_html_e( 'Business Array Check Cached', 'feed-them-social' );
@@ -626,7 +620,7 @@ class FTS_Instagram_Feed extends feed_them_social_functions {
                         $insta_data = $this->fts_get_feed_cache( $basic_cache );
 
                         $insta_data = json_decode( $insta_data );
-                       // echo 'eeeeeeeeeeee';
+
                         // Used for Testing Only.
                         if ( current_user_can( 'administrator' ) && 'true' === $debug ) {
                             esc_html_e( 'Array Check Cached', 'feed-them-social' );

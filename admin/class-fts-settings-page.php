@@ -207,7 +207,7 @@ class FTS_Settings_Page {
 										<input class="feed-them-social-admin-submit-btn" type="submit" value="<?php echo esc_html__( 'Clear All FTS Feeds Cache', 'feed-them-social' ); ?>"/>
 									</form>
 
-                                    <form method="post" action="?page=feed-them-settings-page&cache=clearftsadmincache&tab=global_options">
+                                    <form style="display: none" method="post" action="?page=feed-them-settings-page&cache=clearftsadmincache&tab=global_options">
                                         <input class="feed-them-social-admin-submit-btn" type="submit" value="<?php echo esc_html__( 'Clear All FTS Admin Options Cache', 'feed-them-social' ); ?>"/>
                                     </form>
 								</div><!--/feed-them-clear-cache-->

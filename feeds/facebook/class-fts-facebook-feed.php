@@ -169,7 +169,7 @@ class FTS_Facebook_Feed extends feed_them_social_functions {
         }
 
         // Get Access Token.
-        $access_token = $fb_shortcode['access_token'] ?? $this->get_fb_access_token();
+        $access_token = isset( $fb_shortcode['access_token'] ) && '' !== $fb_shortcode['access_token'] ? $fb_shortcode['access_token'] : $this->get_fb_access_token();
 
         // UserName?.
         if ( ! $fb_shortcode['id'] ) {
@@ -285,6 +285,7 @@ class FTS_Facebook_Feed extends feed_them_social_functions {
         $fb_cache_name = $this->get_fb_cache_name( $fb_shortcode );
         // Get language.
         $language = $this->get_language( $fb_shortcode );
+        // This is for the Overview of Reviews option if chosen.
         if ( 'reviews' !== $fb_shortcode['type'] ) {
             // Get Response (AKA Page & Feed Information) ERROR CHECK inside this function.
             $response = $this->get_facebook_feed_response( $fb_shortcode, $fb_cache_name, $access_token, $language );
@@ -1606,6 +1607,12 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
         }
 
         if ( false !== $this->fts_check_feed_cache_exists( $fb_cache_name ) && ! isset( $_GET['load_more_ajaxing'] ) ) {
+
+            // YO!
+            echo 'Cach Should Be Printing out here.<br/>';
+            echo $fb_cache_name;
+           // print_r( $this->fts_get_feed_cache( $fb_cache_name ) );
+
             $response = $this->fts_get_feed_cache( $fb_cache_name );
         } else {
             // Page.
@@ -1667,6 +1674,9 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
                 }
             } elseif ( 'reviews' === $fb_shortcode['type'] ) {
 
+                // YO!
+                echo 'QQQQmyCacheName Ok so we are good to this point, but when you reload the page the cache is not decrypting somewhere.';
+                echo $fb_cache_name;
                 // Reviews.
                 if ( is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) ) {
                     $fts_facebook_reviews = new FTS_Facebook_Reviews();
@@ -1695,6 +1705,7 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
                 $feed_data                = json_decode( $response['feed_data'] );
                 $fts_error_check          = new fts_error_handler();
                 $fts_error_check_complete = $fts_error_check->facebook_error_check( $fb_shortcode, $feed_data );
+
                 if ( is_array( $fts_error_check_complete ) && true === $fts_error_check_complete[0] ) {
 
                     // If old Cache exists use it instead of showing an error.
@@ -1729,7 +1740,13 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
             // Make sure it's not ajaxing.
             if ( ! empty( $response['feed_data'] ) ) {
                 // Create Cache.
+
+                // YO! LEAVING OFF HERE, ALMOST SEEING WHY THE CACHE IS NOT WORKING.
+                echo'Caching Reponse:<br/>';
+                print_r($response);
                 $this->fts_create_feed_cache( $fb_cache_name, $response );
+
+               // print_r( $response );
             }
         } // end main else.
 

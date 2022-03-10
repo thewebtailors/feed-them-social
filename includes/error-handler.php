@@ -137,7 +137,7 @@ class fts_error_handler {
 	 * @since 1.9.6
 	 */
 	public function facebook_error_check( $fb_shortcode, $feed_data ) {
-		// return error if no data retreived!
+		// return error if no data retrieved!
 		try {
 			if ( ! isset( $feed_data->data ) || empty( $feed_data->data ) ) {
 				// Solution Text!
