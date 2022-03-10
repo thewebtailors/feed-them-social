@@ -2922,8 +2922,6 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	public function fts_create_feed_cache( $transient_name, $response ) {
 
         // YO! something is happening here that is not right. and on the class-fts-facebook-feed.php page.
-
-
         echo '<br/><br/>Now we are in the create feed cache function. What is the response at this point just before we encrypt response.<br/>';
         print_r($response);
 
@@ -2931,6 +2929,7 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 
         echo '<br/><br/>#2 Now we have encrypted the data. What is the response at this point.<br/>';
         print_r($encrypted_response);
+
         echo '<br/><br/>#3 What is the decrypting response at this point.<br/>';
         print_r($this->data_protection->decrypt( $encrypted_response ));
 
@@ -2945,10 +2944,10 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
         //Check an Encrypted Response was returned.
         if( $encrypted_response ){
             // Timed Cache.
-            set_transient( 'fts_t_' . $transient_name, $response, $cache_time_limit );
+            set_transient( 'fts_t_' . $transient_name, $encrypted_response, $cache_time_limit );
 
             // Permanent Feed cache. NOTE set to 0.
-            set_transient( 'fts_p_' . $transient_name, $response, 0 );
+            set_transient( 'fts_p_' . $transient_name, $encrypted_response, 0 );
         }
 
 	}
