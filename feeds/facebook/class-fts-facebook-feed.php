@@ -1619,6 +1619,8 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
             if ( 'page' === $fb_shortcode['type'] && 'page_only' === $fb_shortcode['posts_displayed'] ) {
                 $mulit_data = array( 'page_data' => 'https://graph.facebook.com/' . $fb_shortcode['id'] . '?fields=id,name,description&access_token=' . $access_token . $language . '' );
 
+
+
                 if ( isset( $_REQUEST['next_url'] ) ) {
                     $_REQUEST['next_url'] = str_replace( 'access_token=XXX', 'access_token=' . get_option( 'fts_facebook_custom_api_token' ), $_REQUEST['next_url'] );
                 }
@@ -1675,7 +1677,7 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
             } elseif ( 'reviews' === $fb_shortcode['type'] ) {
 
                 // YO!
-                echo 'QQQQmyCacheName Ok so we are good to this point, but when you reload the page the cache is not decrypting somewhere.';
+                echo 'myCacheName Ok so we are good to this point, but when you reload the page the cache is not decrypting somewhere.';
                 echo $fb_cache_name;
                 // Reviews.
                 if ( is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) ) {
@@ -1742,8 +1744,11 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
                 // Create Cache.
 
                 // YO! LEAVING OFF HERE, ALMOST SEEING WHY THE CACHE IS NOT WORKING.
-                echo'Caching Reponse:<br/>';
-                print_r($response);
+                //echo'Caching Reponse:<br/>';
+
+                //$response = is_array( $response ) ? serialize( $response ) : $response ;
+                //print_r($response);
+
                 $this->fts_create_feed_cache( $fb_cache_name, $response );
 
                // print_r( $response );

@@ -48,6 +48,9 @@ class Data_Protection {
      * @return false|mixed|string
      */
     public function encrypt($value ) {
+
+       //error_log( print_r( 'json_decoded Value: '. json_decode($value), true ) );
+
         if ( ! extension_loaded( 'openssl' ) || empty( $value ) ) {
             return false;
         }
@@ -78,11 +81,11 @@ class Data_Protection {
      * @param $encrypted_value
      * @return false|mixed|string
      */
-    public function decrypt($encrypted_value ) {
+    public function decrypt( $encrypted_value ) {
+
         if ( ! extension_loaded( 'openssl' ) || empty( $encrypted_value ) ) {
             return false;
         }
-
         $encrypted_value = base64_decode( $encrypted_value, true );
 
         $method = 'aes-256-ctr';
@@ -96,11 +99,8 @@ class Data_Protection {
             return false;
         }
 
-        $decrypted_value = substr( $decrypted_value, 0, - strlen( $this->salt ) );
+        return substr( $decrypted_value, 0, - strlen( $this->salt ) );
 
-        //error_log( print_r( $decrypted_value, true ) );
-
-        return $decrypted_value;
     }
 
     /**

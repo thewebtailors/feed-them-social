@@ -2862,7 +2862,10 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 * @since 1.9.6
 	 */
 	public function fts_get_feed_json( $feeds_mulit_data ) {
-		// Make Multiple Requests from array with more than 2 keys!
+
+        error_log( print_r( 'Encrypted Value: '. $feeds_mulit_data, true ) );
+
+        // Make Multiple Requests from array with more than 2 keys!
 		if ( is_array( $feeds_mulit_data ) && count( $feeds_mulit_data ) > 1 ) {
 			$new_feeds_mulit_data = array();
 
@@ -2925,13 +2928,26 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
         echo '<br/><br/>Now we are in the create feed cache function. What is the response at this point just before we encrypt response.<br/>';
         print_r($response);
 
-        $encrypted_response = $this->data_protection->encrypt( $response );
+        if(is_array($response)){
+            $encrypted_response = array();
+            foreach ($response as $item_key => $item_value){
+                $encrypted_response[ $item_key ] = $this->data_protection->encrypt( $item_value );
+            }
 
-        echo '<br/><br/>#2 Now we have encrypted the data. What is the response at this point.<br/>';
-        print_r($encrypted_response);
+            $encrypted_response = serialize($encrypted_response);
 
-        echo '<br/><br/>#3 What is the decrypting response at this point.<br/>';
-        print_r($this->data_protection->decrypt( $encrypted_response ));
+            echo '<br/><br/>Serialized Array<br/>';
+            print_r($encrypted_response);
+        }
+        else{
+            $encrypted_response = $this->data_protection->encrypt( $response );
+
+            echo '<br/><br/>#2 Now we have encrypted the data. What is the response at this point.<br/>';
+            print_r($encrypted_response);
+        }
+
+
+
 
 		// Is there old Cache? If so Delete it!
 		if ( true === $this->fts_check_feed_cache_exists( $transient_name ) ) {
@@ -2961,6 +2977,7 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 * @since 1.9.6
 	 */
 	public function fts_get_feed_cache( $transient_name, $errored = null ) {
+
 		// If Error use Permanent Cache!
 		if ( true === $errored ) {
 			$trans = get_transient( 'fts_p_' . $transient_name );
@@ -2973,9 +2990,32 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
         echo '<br/>GET CACHE What is the response at this point:<br/>';
         print_r($trans);
 
-        //return $trans;
-        // YO!
-        return false !== $this->data_protection->decrypt( $trans ) ? $this->data_protection->decrypt( $trans ) : $trans;
+        if ($trans){
+
+            //is the transient value serialized? If so, unserialize it!
+            $unserialized_value = \maybe_unserialize( $trans );
+
+            echo '<br/><br/>UNSerialized Array<br/>';
+            print_r($unserialized_value);
+
+            // Is value an array?
+            if(is_array($unserialized_value)){
+                $decrypted_value = array();
+                foreach ($unserialized_value as $item_key => $item_value){
+                    $decrypted_value[ $item_key ] = $this->data_protection->decrypt( $item_value );
+                }
+            }
+            else{
+                // Not an array so decrypt string.
+                $decrypted_value = false !== $this->data_protection->decrypt( $trans ) ? $this->data_protection->decrypt( $trans ) : $trans;
+            }
+
+            echo '<br/><br/>Decrypted!<br/>';
+            print_r($decrypted_value);
+
+        }
+
+        return $decrypted_value;
 	}
 
 	/**
