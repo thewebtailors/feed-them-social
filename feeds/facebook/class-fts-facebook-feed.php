@@ -7,9 +7,6 @@
  * @since 1.9.6
  */
 class FTS_Facebook_Feed extends feed_them_social_functions {
-
-    public $data_protection;
-
     /**
      * Construct
      *
@@ -17,11 +14,7 @@ class FTS_Facebook_Feed extends feed_them_social_functions {
      *
      * @since 1.9.6
      */
-    public function __construct( ) {
-
-        // Data Protection
-        $this->data_protection = new Data_Protection();
-
+    public function __construct() {
         add_shortcode( 'fts_facebook_group', array( $this, 'fts_fb_func' ) );
         add_shortcode( 'fts_facebook_page', array( $this, 'fts_fb_func' ) );
         add_shortcode( 'fts_facebook_event', array( $this, 'fts_fb_func' ) );
@@ -169,7 +162,12 @@ class FTS_Facebook_Feed extends feed_them_social_functions {
         }
 
         // Get Access Token.
-        $access_token = isset( $fb_shortcode['access_token'] ) && '' !== $fb_shortcode['access_token'] ? $fb_shortcode['access_token'] : $this->get_fb_access_token();
+        $access_token = isset( $fb_shortcode['access_token'] ) ? $fb_shortcode['access_token'] : '';
+        if ( ! empty( $access_token ) ) {
+            $access_token = $fb_shortcode['access_token'];
+        } else {
+            $access_token = $this->get_access_token();
+        }
 
         // UserName?.
         if ( ! $fb_shortcode['id'] ) {
@@ -285,7 +283,6 @@ class FTS_Facebook_Feed extends feed_them_social_functions {
         $fb_cache_name = $this->get_fb_cache_name( $fb_shortcode );
         // Get language.
         $language = $this->get_language( $fb_shortcode );
-        // This is for the Overview of Reviews option if chosen.
         if ( 'reviews' !== $fb_shortcode['type'] ) {
             // Get Response (AKA Page & Feed Information) ERROR CHECK inside this function.
             $response = $this->get_facebook_feed_response( $fb_shortcode, $fb_cache_name, $access_token, $language );
@@ -313,7 +310,7 @@ class FTS_Facebook_Feed extends feed_them_social_functions {
             } elseif ( ! empty( $fb_shortcode['access_token'] ) ) {
                 $biz_access_token = $fb_shortcode['access_token'];
             } else {
-                $biz_access_token = $this->get_fb_biz_access_token();
+                $biz_access_token = get_option( 'fts_facebook_custom_api_token_biz' );
             }
 
             // Get Response (AKA Page & Feed Information) ERROR CHECK inside this function.
@@ -1471,6 +1468,36 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
     }
 
     /**
+     * Get Access Token
+     *
+     * @return mixed
+     * @since 1.9.6
+     */
+    public function get_access_token() {
+        // The API Access Token.
+        // $custom_access_token = get_option('fts_facebook_custom_api_token');
+        // if (!empty($custom_access_token)) {
+        // return $access_token;
+        // } else {
+        // Randomizer
+        // $values = array(
+        // '431287540548931|4A23YYIFqhd-gpz_E4Fy6U_Seo0',
+        // '1748446362151826|epVUmLiKT8QhLN63iRvvXXHwxqk',
+        // '1875381106044241|KmWz3mtzGye0M5HTdX0SK7rqpIU',
+        // '754106341419549|AMruxCJ_ly8825VXeLhBKo_kOfs',
+        // '438563519819257|1GJ8GLl1AQ7ZTvXV_Xpok_QpH6s',
+        // '753693994788276|xm_PXoNRWW8WPQdcQArRpBgWn5Q',
+        // '644818402385988|sABEvG0QiOaJRlNLC2NphfQLlfg',
+        // '292500071162951|9MA-kzWVs6HTEybpdxKjgF_gqeo',
+        // '263710677420086|Jpui2CFig7RbtdHaHPN_fiEa77U',
+        // '1850081601881384|u2JcPCn7TH40MY5BwC-i4PMHGm8',
+        // );
+        // $access_token = $values[array_rand($values, 1)];.
+        return get_option( 'fts_facebook_custom_api_token' );
+        // }
+    }
+
+    /**
      * Get View Link
      *
      * @param string $fb_shortcode The facebook feed shortcode.
@@ -1607,19 +1634,11 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
         }
 
         if ( false !== $this->fts_check_feed_cache_exists( $fb_cache_name ) && ! isset( $_GET['load_more_ajaxing'] ) ) {
-
-            // YO!
-            echo 'Cach Should Be Printing out here.<br/>';
-            echo $fb_cache_name;
-           // print_r( $this->fts_get_feed_cache( $fb_cache_name ) );
-
             $response = $this->fts_get_feed_cache( $fb_cache_name );
         } else {
             // Page.
             if ( 'page' === $fb_shortcode['type'] && 'page_only' === $fb_shortcode['posts_displayed'] ) {
                 $mulit_data = array( 'page_data' => 'https://graph.facebook.com/' . $fb_shortcode['id'] . '?fields=id,name,description&access_token=' . $access_token . $language . '' );
-
-
 
                 if ( isset( $_REQUEST['next_url'] ) ) {
                     $_REQUEST['next_url'] = str_replace( 'access_token=XXX', 'access_token=' . get_option( 'fts_facebook_custom_api_token' ), $_REQUEST['next_url'] );
@@ -1676,9 +1695,6 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
                 }
             } elseif ( 'reviews' === $fb_shortcode['type'] ) {
 
-                // YO!
-                echo 'myCacheName Ok so we are good to this point, but when you reload the page the cache is not decrypting somewhere.';
-                echo $fb_cache_name;
                 // Reviews.
                 if ( is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) ) {
                     $fts_facebook_reviews = new FTS_Facebook_Reviews();
@@ -1707,7 +1723,6 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
                 $feed_data                = json_decode( $response['feed_data'] );
                 $fts_error_check          = new fts_error_handler();
                 $fts_error_check_complete = $fts_error_check->facebook_error_check( $fb_shortcode, $feed_data );
-
                 if ( is_array( $fts_error_check_complete ) && true === $fts_error_check_complete[0] ) {
 
                     // If old Cache exists use it instead of showing an error.
@@ -1742,16 +1757,7 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
             // Make sure it's not ajaxing.
             if ( ! empty( $response['feed_data'] ) ) {
                 // Create Cache.
-
-                // YO! LEAVING OFF HERE, ALMOST SEEING WHY THE CACHE IS NOT WORKING.
-                //echo'Caching Reponse:<br/>';
-
-                //$response = is_array( $response ) ? serialize( $response ) : $response ;
-                //print_r($response);
-
                 $this->fts_create_feed_cache( $fb_cache_name, $response );
-
-               // print_r( $response );
             }
         } // end main else.
 
@@ -2116,7 +2122,7 @@ style="margin:' . ( isset( $fb_shortcode['slider_margin'] ) && '' !== $fb_shortc
             // we check to see if the loadmore count number is set and if so pass that as the new count number when fetching the next set of posts.
             $_REQUEST['next_url'] = '' !== $loadmore_count ? str_replace( "limit=$posts", "limit=$loadmore_count", $next_url ) : $next_url;
 
-            $access_token         = is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) ? 'access_token=' . $this->get_fb_biz_access_token() : 'access_token=' . $this->get_fb_biz_access_token();
+            $access_token         = is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) ? 'access_token=' . get_option( 'fts_facebook_custom_api_token_biz' ) : 'access_token=' . get_option( 'fts_facebook_custom_api_token' );
             $_REQUEST['next_url'] = str_replace( $access_token, 'access_token=XXX', $next_url );
 
             echo '<script>';

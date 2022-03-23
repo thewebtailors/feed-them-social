@@ -9,7 +9,6 @@ namespace feedthemsocial;
  */
 class feed_them_social_functions {
 
-    public $data_protection;
 
 	/**
 	 * Construct
@@ -18,15 +17,11 @@ class feed_them_social_functions {
 	 *
 	 * @since 1.9.6
 	 */
-	public function __construct( ) {
-
+	public function __construct() {
 		$root_file                       = plugin_dir_path( dirname( __FILE__ ) );
 		$this->premium                   = str_replace( 'feed-them-social/', 'feed-them-premium/', $root_file );
 		$this->facebook_carousel_premium = str_replace( 'feed-them-social/', 'feed-them-carousel-premium/', $root_file );
 		$this->facebook_reviews          = str_replace( 'feed-them-social/', 'feed-them-social-facebook-reviews/', $root_file );
-
-        // Data Protection
-        $this->data_protection = new Data_Protection();
 
 		// FTS Activation Function. Commenting out for future use. SRL!
 		register_deactivation_hook( __FILE__, array( $this, 'fts_get_check_plugin_version' ) );
@@ -37,11 +32,8 @@ class feed_them_social_functions {
 			add_action( 'init', array( $this, 'fts_clear_cache_script' ) );
 			add_action( 'wp_head', array( $this, 'my_fts_ajaxurl' ) );
 			add_action( 'wp_ajax_fts_clear_cache_ajax', array( $this, 'fts_clear_cache_ajax' ) );
-
-
 		}
-        add_action( 'wp_ajax_fts_encrypt_token_ajax', array( $this, 'fts_encrypt_token_ajax' ) );
-        add_action( 'wp_ajax_fts_refresh_token_ajax', array( $this, 'fts_refresh_token_ajax' ) );
+		add_action( 'wp_ajax_fts_refresh_token_ajax', array( $this, 'fts_refresh_token_ajax' ) );
 		add_action( 'wp_ajax_fts_instagram_token_ajax', array( $this, 'fts_instagram_token_ajax' ) );
 
 		if ( is_admin() || is_plugin_active( 'feed-them-premium/feed-them-premium.php' ) || is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) || is_plugin_active( 'fts-bar/fts-bar.php' ) ) {
@@ -62,7 +54,6 @@ class feed_them_social_functions {
 	 * @since 1.9.6
 	 */
 	public function init() {
-
 		if ( is_admin() ) {
 			// Register Settings!
 			add_action( 'admin_init', array( $this, 'fts_settings_page_register_settings' ) );
@@ -113,64 +104,7 @@ class feed_them_social_functions {
 		}
 	}
 
-    /**
-     * Get Facebook Custom API Access Token
-     *
-     * @return mixed
-     * @since 2.9.7.2
-     */
-    public function get_fb_access_token() {
-        //Facebook.
-        $token           = get_option( 'fts_facebook_custom_api_token' );
-        $value = false !== $this->data_protection->decrypt( $token ) ? $this->data_protection->decrypt( $token ) : $token;
-
-        return $value;
-    }
-
-    /**
-     * Get Facebook Reviews API Access Token
-     *
-     * @return mixed
-     * @since 2.9.7.2
-     */
-    public function get_fb_biz_access_token() {
-        //Facebook Reviews.
-        $reviews_token   = get_option( 'fts_facebook_custom_api_token_biz' );
-        $value = false !== $this->data_protection->decrypt( $reviews_token ) ? $this->data_protection->decrypt( $reviews_token ) : $reviews_token;
-
-        return $value;
-    }
-
-
-    /**
-     * Get Instagram Basic Access Token
-     *
-     * @return mixed
-     * @since 2.9.7.2
-     */
-    public function get_fts_instagram_custom_api_token() {
-        //Instagram Basic.
-        $basic_token     = get_option( 'fts_instagram_custom_api_token' );
-        $value = false !== $this->data_protection->decrypt( $basic_token ) ? $this->data_protection->decrypt( $basic_token ) : $basic_token;
-
-        return $value;
-    }
-
-    /**
-     * Get Instagram Business API Access Token
-     *
-     * @return mixed
-     * @since 1.9.6
-     */
-    public function get_ig_fb_biz_access_token() {
-        //Instagram Business.
-        $business_token  = get_option( 'fts_facebook_instagram_custom_api_token' );
-        $value = false !== $this->data_protection->decrypt( $business_token ) ? $this->data_protection->decrypt( $business_token ) : $business_token;
-
-        return $value;
-    }
-
-    /**
+	/**
 	 * FTS Instagram Token Ajax
 	 *
 	 * This will save the returned token to the database.
@@ -186,56 +120,14 @@ class feed_them_social_functions {
 		if ( wp_verify_nonce( $fts_refresh_token_nonce, 'fts_token_nonce' ) ) {
 			if ( isset( $access_token ) ) {
 				update_option( 'fts_instagram_custom_api_token', sanitize_text_field( $access_token ) );
+				// $insta_id = substr( $access_token, 0, strpos( $access_token, '.' ) );
 				update_option( 'fts_instagram_custom_id', sanitize_text_field( $user_id ) );
 			}
 		}
 		die;
 	}
 
-    /**
-     * FTS Instagram Token Ajax
-     *
-     * SRL: This will save the encrypted version of the token to the database and return the original token to the input field upon page submit.
-     *
-     * @since 2.9.7.2
-     */
-    public function fts_encrypt_token_ajax() {
-
-        $fts_refresh_token_nonce = wp_create_nonce( 'fts_encrypt_token_nonce' );
-        $access_token            = $_REQUEST['access_token'];
-        $encrypt                 = $this->data_protection->encrypt( $access_token );
-
-        if ( wp_verify_nonce( $fts_refresh_token_nonce, 'fts_encrypt_token_nonce' ) ) {
-            if( 'business' === $_REQUEST['token_type'] ){
-                // Now the encrypted version is saved to the DB.
-                update_option( 'fts_facebook_instagram_custom_api_token', sanitize_text_field( $encrypt ) );
-            }
-            elseif ( 'basic' === $_REQUEST['token_type'] ) {
-                // Now the encrypted version is saved to the DB.
-                update_option( 'fts_instagram_custom_api_token', sanitize_text_field( $encrypt ) );
-            }
-            elseif( 'fbBusiness' === $_REQUEST['token_type'] ){
-                // Now the encrypted version is saved to the DB.
-                update_option( 'fts_facebook_custom_api_token', sanitize_text_field( $encrypt ) );
-            }
-            elseif( 'fbBusinessReviews' === $_REQUEST['token_type'] ){
-                // Now the encrypted version is saved to the DB.
-                update_option( 'fts_facebook_custom_api_token_biz', sanitize_text_field( $encrypt ) );
-            }
-        }
-        $token_data = array (
-                'token'      => $access_token,
-                'encrypted'  => $encrypt,
-        );
-
-        // We pass the original access token back so we can add it to our input field.
-        // Also passing the encrypted token so we can see it in the console.
-        echo json_encode( $token_data );
-
-        wp_die();
-    }
-
-    /**
+	/**
 	 * Feed Them Instagram Save Token
 	 *
 	 * FTS Check and Save Instagram Token Validity.
@@ -248,21 +140,16 @@ class feed_them_social_functions {
 		$fts_refresh_token_nonce = wp_create_nonce( 'access_token' );
 
 		if ( wp_verify_nonce( $fts_refresh_token_nonce, 'access_token' ) ) {
-            $raw_token  = $_GET['code'];
-			$feed_type  = $_GET['feed_type'];
-			$user_id    = $_GET['user_id'];
 
+			$auth_obj  = $_GET['code'];
+			$feed_type = $_GET['feed_type'];
+			$user_id   = $_GET['user_id'];
 
-
-			if ( isset( $raw_token ) && 'original_instagram' === $feed_type || isset( $raw_token ) && 'instagram_basic' === $feed_type ) {
-                $encrypted_token = $this->data_protection->encrypt( $raw_token );
-              //  error_log( print_r( $encrypted_token, true ) );
-
-                ?>
+			if ( isset( $auth_obj ) && 'original_instagram' === $feed_type || isset( $auth_obj ) && 'instagram_basic' === $feed_type ) {
+				?>
 				<script>
 					jQuery(document).ready(function () {
-
-						var access_token = '<?php echo sanitize_text_field( $encrypted_token ); ?>';
+						var access_token = '<?php echo sanitize_text_field( $auth_obj ); ?>';
 						var user_id = '<?php echo sanitize_text_field( $user_id ); ?>';
 
 						jQuery.ajax({
@@ -275,9 +162,13 @@ class feed_them_social_functions {
 							url: ftsAjax.ajaxurl,
 							success: function (response) {
 								<?php
-                                $insta_url = 'instagram_basic' === $feed_type ? esc_url_raw( 'https://graph.instagram.com/me?fields=id,username&access_token=' . $raw_token ) : esc_url( 'https://api.instagram.com/v1/users/self/?access_token=' . $raw_token );
-
-								// Get Data for Instagram to check for errors!
+								$auth_obj = $_GET['code'];
+								if ( 'instagram_basic' === $feed_type ) {
+									$insta_url = esc_url_raw( 'https://graph.instagram.com/me?fields=id,username&access_token=' . $auth_obj );
+								} else {
+									$insta_url = esc_url( 'https://api.instagram.com/v1/users/self/?access_token=' . $auth_obj );
+								}
+								// Get Data for Instagram to check for errors
 								$response                = wp_remote_fopen( $insta_url );
 								$test_app_token_response = json_decode( $response );
 
@@ -317,7 +208,7 @@ class feed_them_social_functions {
 									<?php
 								}
 								?>
-								console.log( 'success saving instagram access token: Encrypted Token: <?php echo $encrypted_token ?>' );
+								console.log( 'success saving instagram access token' );
 							}
 						}); // end of ajax()
 						return false;
@@ -469,7 +360,7 @@ class feed_them_social_functions {
 								</div>
 								<div class="page-token"><?php echo esc_attr( $data->access_token ); ?></div>
 						<?php
-						$facebook_input_token  = $this->get_fb_access_token();
+						$facebook_input_token  = get_option( 'fts_facebook_custom_api_token' );
 						$facebook_access_token = $data->access_token;
 						if ( $facebook_input_token === $facebook_access_token ) {
 							?>
@@ -536,7 +427,7 @@ class feed_them_social_functions {
 
 															<div class="page-token"><?php echo esc_html( $location->access_token ); ?></div>
 															<?php
-															$facebook_input_token  = $this->get_fb_access_token();
+															$facebook_input_token  = get_option( 'fts_facebook_custom_api_token' );
 															$facebook_access_token = $location->access_token;
 															if ( $facebook_input_token === $facebook_access_token ) {
 																?>
@@ -725,8 +616,8 @@ class feed_them_social_functions {
 						<?php if ( 'fts-facebook-feed-styles-submenu-page' === $_GET['page'] ) { ?>
 							$("#fts-facebook-feed-options-form").submit();
 							<?php
-                        } elseif ( 'fts-instagram-feed-styles-submenu-page' === $_GET['page'] ) {
-	                    ?>
+} elseif ( 'fts-instagram-feed-styles-submenu-page' === $_GET['page'] ) {
+	?>
 							$("#fts-instagram-feed-options-form").submit();
 						<?php } ?>
 					});
@@ -738,7 +629,6 @@ class feed_them_social_functions {
 					$(fb).click(function () {
 						var fb_page_id = $(this).find('.fts-api-facebook-id').html();
 						var token = $(this).find('.page-token').html();
-
 						// alert(token);
 						var name = $(this).find('.fb-name').html();
 						var profile_image = $(this).find('.fb-image img').attr('src');
@@ -998,7 +888,7 @@ class feed_them_social_functions {
 			wp_enqueue_script( 'fts_clear_cache_script', plugins_url( 'feed-them-social/admin/js/developer-admin.js' ), array( 'jquery' ), FTS_CURRENT_VERSION, false );
 			wp_localize_script( 'fts_clear_cache_script', 'ftsAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 			wp_enqueue_script( 'fts_clear_cache_script' );
-        }
+		}
 
 		// we delete this option if found so we only empty the cache once when the plugin is ever activated or updated!
 		delete_option( 'Feed_Them_Social_Activated_Plugin' );
@@ -2212,11 +2102,11 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 				$output = '<form class="feed-them-social-admin-form shortcode-generator-form fb-page-shortcode-form" id="fts-fb-page-form">';
 
 				// Check to see if token is in place otherwise show a message letting person no what they need to do!
-				$facebook_options = $this->get_fb_access_token() ? 'Yes' : 'No';
+				$facebook_options = get_option( 'fts_facebook_custom_api_token' ) ? 'Yes' : 'No';
 				$output          .= isset( $facebook_options ) && 'No' !== $facebook_options ? '' . "\n" : '<div class="feed-them-social-admin-input-wrap fts-required-token-message">Please get your Access Token on our <a href="admin.php?page=fts-facebook-feed-styles-submenu-page">Facebook Options</a> page.</div>' . "\n";
 				// end custom message for requiring token!
 				if ( is_plugin_active( 'feed-them-social-facebook-reviews/feed-them-social-facebook-reviews.php' ) ) {
-					$facebook_options2 = $this->get_fb_biz_access_token() ? 'Yes' : 'No';
+					$facebook_options2 = get_option( 'fts_facebook_custom_api_token_biz' ) ? 'Yes' : 'No';
 					// Check to see if token is in place otherwise show a message letting person no what they need to do
 					// $output .= isset($facebook_options2) && $facebook_options2 !== 'No' ? '' . "\n" : '<div class="feed-them-social-admin-input-wrap fts-required-token-message">Please add a Facebook Page Reviews API Token to our <a href="admin.php?page=fts-facebook-feed-styles-submenu-page">Facebook Options</a> page before trying to view your Facebook Reviews feed.</div>' . "\n";
 					// end custom message for requiring token!
@@ -2862,10 +2752,7 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 * @since 1.9.6
 	 */
 	public function fts_get_feed_json( $feeds_mulit_data ) {
-
-        error_log( print_r( 'Encrypted Value: '. $feeds_mulit_data, true ) );
-
-        // Make Multiple Requests from array with more than 2 keys!
+		// Make Multiple Requests from array with more than 2 keys!
 		if ( is_array( $feeds_mulit_data ) && count( $feeds_mulit_data ) > 1 ) {
 			$new_feeds_mulit_data = array();
 
@@ -2912,7 +2799,6 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 		return $data;
 	}
 
-
 	/**
 	 * FTS Create Feed Cache
 	 *
@@ -2924,31 +2810,6 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 */
 	public function fts_create_feed_cache( $transient_name, $response ) {
 
-        // YO! something is happening here that is not right. and on the class-fts-facebook-feed.php page.
-        echo '<br/><br/>Now we are in the create feed cache function. What is the response at this point just before we encrypt response.<br/>';
-        print_r($response);
-
-        if(is_array($response)){
-            $encrypted_response = array();
-            foreach ($response as $item_key => $item_value){
-                $encrypted_response[ $item_key ] = $this->data_protection->encrypt( $item_value );
-            }
-
-            $encrypted_response = serialize($encrypted_response);
-
-            echo '<br/><br/>Serialized Array<br/>';
-            print_r($encrypted_response);
-        }
-        else{
-            $encrypted_response = $this->data_protection->encrypt( $response );
-
-            echo '<br/><br/>#2 Now we have encrypted the data. What is the response at this point.<br/>';
-            print_r($encrypted_response);
-        }
-
-
-
-
 		// Is there old Cache? If so Delete it!
 		if ( true === $this->fts_check_feed_cache_exists( $transient_name ) ) {
 			// Make Sure to delete old permanent cache before setting up new cache!
@@ -2957,15 +2818,11 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 		// Cache Time set on Settings Page under FTS Tab.
 		$cache_time_limit = true === get_option( 'fts_clear_cache_developer_mode' ) && '1' !== get_option( 'fts_clear_cache_developer_mode' ) ? get_option( 'fts_clear_cache_developer_mode' ) : '900';
 
-        //Check an Encrypted Response was returned.
-        if( $encrypted_response ){
-            // Timed Cache.
-            set_transient( 'fts_t_' . $transient_name, $encrypted_response, $cache_time_limit );
+		// Timed Cache.
+		set_transient( 'fts_t_' . $transient_name, $response, $cache_time_limit );
 
-            // Permanent Feed cache. NOTE set to 0.
-            set_transient( 'fts_p_' . $transient_name, $encrypted_response, 0 );
-        }
-
+		// Permanent Feed cache. NOTE set to 0.
+		set_transient( 'fts_p_' . $transient_name, $response, 0 );
 	}
 
 	/**
@@ -2980,42 +2837,11 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 
 		// If Error use Permanent Cache!
 		if ( true === $errored ) {
-			$trans = get_transient( 'fts_p_' . $transient_name );
+			return get_transient( 'fts_p_' . $transient_name );
 		}
-        else{
-            // If no error use Timed Cache!
-            $trans =  get_transient( 'fts_t_' . $transient_name );
-        }
 
-        echo '<br/>GET CACHE What is the response at this point:<br/>';
-        print_r($trans);
-
-        if ($trans){
-
-            //is the transient value serialized? If so, unserialize it!
-            $unserialized_value = \maybe_unserialize( $trans );
-
-            echo '<br/><br/>UNSerialized Array<br/>';
-            print_r($unserialized_value);
-
-            // Is value an array?
-            if(is_array($unserialized_value)){
-                $decrypted_value = array();
-                foreach ($unserialized_value as $item_key => $item_value){
-                    $decrypted_value[ $item_key ] = $this->data_protection->decrypt( $item_value );
-                }
-            }
-            else{
-                // Not an array so decrypt string.
-                $decrypted_value = false !== $this->data_protection->decrypt( $trans ) ? $this->data_protection->decrypt( $trans ) : $trans;
-            }
-
-            echo '<br/><br/>Decrypted!<br/>';
-            print_r($decrypted_value);
-
-        }
-
-        return $decrypted_value;
+		// If no error use Timed Cache!
+		return get_transient( 'fts_t_' . $transient_name );
 	}
 
 	/**
@@ -3066,49 +2892,15 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 * @return string
 	 * @since 1.9.6
 	 */
-	public function feed_them_clear_admin_cache() {
+	public function feed_them_clear_cache() {
 		global $wpdb;
 		// Clear UnExpired Timed Cache!
-		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", 'fts_facebook_%' ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_fts_t_%' ) );
 		// Clear Expired Timed Cache!
-		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", 'fts_instagram_%' ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_timeout_fts_t_%' ) );
 		wp_reset_query();
-		return 'Cache for ALL FTS Admin Options cleared!';
+		return 'Cache for ALL FTS Feeds cleared!';
 	}
-
-    /**
-     * Feed Them Clear Instagram Token.
-     *
-     * Clear ALL FTS Cache.
-     *
-     * @return string
-     * @since 1.9.6
-     */
-    public function feed_them_clear_ig_token() {
-        global $wpdb;
-        // Clear Expired Timed Cache!
-        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", 'fts_instagram_custom_api_token' ) );
-        wp_reset_query();
-        return 'Cache for ALL FTS Admin Options cleared!';
-    }
-
-    /**
-     * Feed Them Clear Cache
-     *
-     * Clear ALL FTS Cache.
-     *
-     * @return string
-     * @since 1.9.6
-     */
-    public function feed_them_clear_cache() {
-        global $wpdb;
-        // Clear UnExpired Timed Cache!
-        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_fts_t_%' ) );
-        // Clear Expired Timed Cache!
-        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_timeout_fts_t_%' ) );
-        wp_reset_query();
-        return 'Cache for ALL FTS Feeds cleared!';
-    }
 
 	/**
 	 * Delete permanent feed Cache
@@ -3127,6 +2919,7 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 		wp_reset_query();
 		return 'Cache for this feed cleared!';
 	}
+
 
 	/**
 	 * FTS Admin Bar Menu
@@ -3166,7 +2959,6 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 					'parent' => 'feed_them_social_admin_bar',
 					'title'  => __( 'Clear Cache', 'feed-them-social' ),
 					'href'   => '#',
-                    'meta' => array('onclick' => 'fts_ClearCache();') //JavaScript function trigger just as an example.
 				)
 			);
 		}

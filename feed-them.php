@@ -111,17 +111,16 @@ final class Feed_Them_Social {
             // Truncate HTML Class
             self::$instance->truncate_html = new FeedThemSocialTruncateHTML();
 
-            // DATA PROTECTIOM
-            self::$instance->data_protection = new feedthemsocial\Data_Protection(); // Core (and load init)!
-
+            // FTS Custom Post Type
+            // self::$instance->fts_custom_post_type = new feedthemsocial\FTS_Custom_Post_Type();
             // Core (and load init)!
-            self::$instance->core_functions = new feedthemsocial\feed_them_social_functions( );
+            self::$instance->core_functions = new feedthemsocial\feed_them_social_functions();
 
             // Free Plugin License page!
             self::$instance->updater = new feedthemsocial\updater_init();
 
             // Facebook!
-            self::$instance->facebook_feed = new feedthemsocial\FTS_Facebook_Feed( );
+            self::$instance->facebook_feed = new feedthemsocial\FTS_Facebook_Feed();
 
             // Twitter!
             self::$instance->twitter_feed = new feedthemsocial\FTS_Twitter_Feed();
@@ -305,12 +304,9 @@ final class Feed_Them_Social {
 
         include FEED_THEM_SOCIAL_PLUGIN_FOLDER_DIR . 'includes/error-handler.php';
 
-        //Data Protection
-        include FEED_THEM_SOCIAL_PLUGIN_FOLDER_DIR . 'admin/data-protection/data-protection.php';
-
         // Core classes!
         include FEED_THEM_SOCIAL_PLUGIN_FOLDER_DIR . 'includes/feed-them-functions.php';
-        $load_fts = new feedthemsocial\feed_them_social_functions( );
+        $load_fts = new feedthemsocial\feed_them_social_functions();
         $load_fts->init();
 
         // Admin Pages!
@@ -432,7 +428,6 @@ final class Feed_Them_Social {
             $activation_options = array(
                 'fts-date-and-time-format'       => 'one-day-ago',
                 'fts_clear_cache_developer_mode' => '86400',
-                'fts_admin_bar_menu' => 'show-admin-bar-menu',
             );
 
             foreach ( $activation_options as $option_key => $option_value ) {
