@@ -68,7 +68,7 @@ class Data_Protection {
             return false;
         }
 
-        //error_log( print_r( $encrypted_value, true ) );
+        // print_r( $encrypted_value, true  );
 
         return base64_encode( $iv . $encrypted_value );
     }

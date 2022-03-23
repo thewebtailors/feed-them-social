@@ -20,6 +20,8 @@ namespace feedthemsocial;
  */
 class FTS_Instagram_Options_Page {
 
+    public $data_protection;
+
     /**
      * Construct
      *
@@ -28,6 +30,8 @@ class FTS_Instagram_Options_Page {
      * @since 1.9.6
      */
     public function __construct() {
+        // Data Protection
+        $this->data_protection = new Data_Protection();
     }
 
 
@@ -38,41 +42,55 @@ class FTS_Instagram_Options_Page {
      */
     public function feed_them_instagram_options_page() {
         $fts_functions                       = new feed_them_social_functions();
+
         $fts_instagram_access_token          = get_option( 'fts_instagram_custom_api_token' );
         $fts_instagram_custom_id             = get_option( 'fts_instagram_custom_id' );
         $fts_instagram_show_follow_btn       = get_option( 'instagram_show_follow_btn' );
         $fts_instagram_show_follow_btn_where = get_option( 'instagram_show_follow_btn_where' );
         $user_id_basic                       = isset( $_GET['code'], $_GET['feed_type']  ) && 'instagram_basic' === $_GET['feed_type'] ? sanitize_text_field( $_GET['user_id'] ) : $fts_instagram_custom_id;
-        $access_token_basic                  = isset( $_GET['code'], $_GET['feed_type']  ) && 'instagram_basic' === $_GET['feed_type'] ? sanitize_text_field( $_GET['code'] ) : get_option( 'fts_instagram_custom_api_token' );
+        $access_token_basic                  = isset( $_GET['code'], $_GET['feed_type']  ) && 'instagram_basic' === $_GET['feed_type'] ? sanitize_text_field( $_GET['code'] ) : $fts_instagram_access_token;
         $access_token                        = isset( $_GET['code'], $_GET['feed_type'] ) && 'original_instagram' === $_GET['feed_type'] ? sanitize_text_field( $_GET['code'] ) : $access_token_basic;
 
-        if ( isset( $_GET['code'] ) ) { ?>
+
+
+       ?>
             <script>
                 jQuery(document).ready(function ($) {
+                      <?php if ( isset( $_GET['code'], $_GET['feed_type'] ) && 'instagram_basic' === $_GET['feed_type'] ) {
+                                $code_token =  sanitize_text_field( $_GET['code'] );
+                      ?>
+                            $('#fts_instagram_custom_api_token').val('');
+                            $('#fts_instagram_custom_api_token').val($('#fts_instagram_custom_api_token').val() + '<?php echo esc_js( $code_token ); ?>');
 
-                    $('#fts_instagram_custom_api_token').val('');
-                    $('#fts_instagram_custom_api_token').val($('#fts_instagram_custom_api_token').val() + '<?php echo esc_js( $access_token ); ?>');
+                            <?php if ( 'original_instagram' === $_GET['feed_type'] ){ ?>
+                            $('#fts_instagram_custom_id').val('');
+                            var str = '<?php echo esc_js( $code_token ); ?>';
+                            $('#fts_instagram_custom_id').val($('#fts_instagram_custom_id').val() + str.split('.', 1));
+                            <?php }
+                            elseif ( 'instagram_basic' === $_GET['feed_type'] ){ ?>
 
-                    <?php if ( 'original_instagram' === $_GET['feed_type'] ){ ?>
-                    $('#fts_instagram_custom_id').val('');
-                    var str = '<?php echo esc_js( $access_token ); ?>';
-                    $('#fts_instagram_custom_id').val($('#fts_instagram_custom_id').val() + str.split('.', 1));
-                    <?php }
-                    elseif ( 'instagram_basic' === $_GET['feed_type'] ){ ?>
-
-                    $('#fts_instagram_custom_id').val('');
-                    $('#fts_instagram_custom_id').val($('#fts_instagram_custom_id').val() + '<?php echo esc_js( $user_id_basic ); ?>');
+                            $('#fts_instagram_custom_id').val('');
+                            $('#fts_instagram_custom_id').val($('#fts_instagram_custom_id').val() + '<?php echo esc_js( $user_id_basic ); ?>');
+                            <?php } ?>
                     <?php } ?>
                 });
             </script>
-        <?php } ?>
+
         <div class="feed-them-social-admin-wrap">
             <h1>
                 <?php esc_html_e( 'Instagram Feed Options', 'feed-them-social' ); ?>
             </h1>
             <div class="use-of-plugin">
-                <?php esc_html_e( 'Get your Access Token and add a follow button and position it using the options below.', 'feed-them-social' ); ?>
+                <?php esc_html_e( 'Get your Access Token and more below. Instagram Basic connections do not allow you to show Profile info or Heart/Comment counts, please use the Instagram Business option to achieve that.', 'feed-them-social' ); ?>
+                <?php
+                echo sprintf(
+                    esc_html__( 'Please note, use of this plugin is subject to %1$sFacebook\'s Platform Terms%2$s', 'feed-them-social' ),
+                    '<a href="' . esc_url( 'https://developers.facebook.com/terms/' ) . '" target="_blank">',
+                    '</a>'
+                );
+                ?>
             </div>
+
             <!-- custom option for padding -->
             <form method="post" class="fts-facebook-feed-options-form" action="options.php" id="fts-instagram-feed-options-form">
                 <?php
@@ -106,25 +124,25 @@ class FTS_Instagram_Options_Page {
                         //    print_r( $test_app_token_response );
                         //   echo '</pre>';
 
-                        ?>
-                        <p>
-                            <?php
-                            echo esc_html__( 'This is required to make the Instagram Feed work. Click the button below and it will connect to your Instagram Account to get an access token. It will then return to this page and save it in the inputs below. After it finishes you will be able to generate your Instagram feed. Instagram Basic connections do not allow you to show Profile info or Heart/Comment counts. Please use the Instagram Business option to achieve that.', 'feed-them-social' );
-                            ?>
-                        </p>
-                        <p>
-                            <?php
+
+                            echo sprintf(
+                                esc_html__( '%1$sClick the button below to get an access token. This gives us read-only access to get your Instagram posts.%2$s', 'feed-them-social' ),
+                                '<p>',
+                                '</p>'
+                            );
+
 
                             echo sprintf(
                                 esc_html__( '%1$sLogin and get my Access Token%2$s', 'feed-them-social' ),
                                 '<a href="' . esc_url( 'https://api.instagram.com/oauth/authorize?app_id=206360940619297&redirect_uri=https://www.slickremix.com/instagram-basic-token/&response_type=code&scope=user_profile,user_media&state=' . admin_url( 'admin.php?page=fts-instagram-feed-styles-submenu-page' ) . '' ) . '" class="fts-instagram-get-access-token">',
                                 '</a>'
                             );
+
+
                             ?>
-                        </p>
+
                         <a href="<?php echo esc_url( 'mailto:support@slickremix.com' ); ?>" class="fts-admin-button-no-work" style="margin-top: 14px; display: inline-block"><?php esc_html_e( 'Button not working?', 'feed-them-social' ); ?></a>
                     </div>
-
                     <div class="fts-clear"></div>
 
                     <div class="feed-them-social-admin-input-wrap" style="margin-bottom:0">
@@ -138,6 +156,11 @@ class FTS_Instagram_Options_Page {
                     <div class="feed-them-social-admin-input-wrap">
                         <div class="feed-them-social-admin-input-label fts-instagram-border-bottom-color-label">
                             <?php
+
+                            $check_token = get_option( 'fts_instagram_custom_api_token' );
+                            $check_basic_token_value = false !== $this->data_protection->decrypt( $check_token ) ? $this->data_protection->decrypt( $check_token ) : $check_token;
+                            $check_basic_encrypted = false !== $this->data_protection->decrypt( $check_token ) ? 'encrypted' : '';
+
                             esc_html_e( 'Access Token Required', 'feed-them-social' );
 
                             if ( isset( $_GET['code'], $_GET['feed_type'] ) && 'original_instagram' === $_GET['feed_type'] || isset( $_GET['code'], $_GET['feed_type'] ) && 'instagram_basic' === $_GET['feed_type'] ) {
@@ -147,7 +170,7 @@ class FTS_Instagram_Options_Page {
                             ?>
                         </div>
 
-                        <input type="text" name="fts_instagram_custom_api_token" class="feed-them-social-admin-input" id="fts_instagram_custom_api_token" value="<?php echo esc_attr( $access_token ); ?>"/>
+                        <input type="text" name="fts_instagram_custom_api_token" class="feed-them-social-admin-input" id="fts_instagram_custom_api_token" data-token="<?php echo $check_basic_encrypted ?>" value="<?php echo $check_basic_token_value ?>"/>
                         <div class="fts-clear"></div>
                     </div>
 
@@ -214,13 +237,17 @@ class FTS_Instagram_Options_Page {
                         </h3>
                         <?php
                         echo sprintf(
-                            esc_html__( 'You must have your Instagram Account linked to a Facebook Business Page, this is required to make the Instagram Business Feed or Hashtag Feed work. %1$sRead Instructions%2$s. Once you have completed the instructions you can click the button below and it will connect to your Facebook Account to get an access token. It should return a Facebook page or list of pages you are admin of and display which ones are connected to Instagram. Choose one, then click save. The Instagram Business option will allow you to display your profile info and the Heart/Comment counts on your media.', 'feed-them-social' ),
+                            esc_html__( 'The Instagram Business option will allow you to display your profile info and the Heart/Comment counts for your posts. You must have your Instagram Account linked to a Facebook Business Page, this is required to make the Instagram Business Feed or Hashtag Feed work. %1$sRead Instructions%2$s.', 'feed-them-social' ),
                             '<a target="_blank" href="' . esc_url( 'https://www.slickremix.com/docs/link-instagram-account-to-facebook/' ) . '">',
                             '</a>'
                         );
                         ?>
                         <p>
-                            <?php
+                            <?php echo sprintf(
+                                esc_html__( '%1$sClick the button below to get an access token. This gives us read-only access to get your Instagram posts.%2$s', 'feed-them-social' ),
+                                '<p>',
+                                '</p>'
+                            );
 
                             // call to get instagram account attached to the facebook page
                             // 1844222799032692 = slicktest fb page (dev user)
@@ -237,8 +264,14 @@ class FTS_Instagram_Options_Page {
                     </div>
                     <a href="<?php echo esc_url( 'mailto:support@slickremix.com' ); ?>" target="_blank" class="fts-admin-button-no-work"><?php esc_html_e( 'Button not working?', 'feed-them-social' ); ?></a>
                     <?php
-                    $test_app_token_id = get_option( 'fts_facebook_instagram_custom_api_token' );
+
+                    $test_app_token_id_biz = get_option( 'fts_facebook_instagram_custom_api_token' );
+                    $check_biz_token_value = false !== $this->data_protection->decrypt( $test_app_token_id_biz ) ? $this->data_protection->decrypt( $test_app_token_id_biz ) : $test_app_token_id_biz;
+                    $check_biz_encrypted = false !== $this->data_protection->decrypt( $test_app_token_id_biz ) ? 'encrypted' : '';
+
                     if ( ! empty( $test_app_token_id ) || ! empty( $test_app_token_id_biz ) ) {
+
+                        $test_app_token_id = $check_biz_token_value;
 
                         $test_app_token_url = array(
                             'app_token_id' => 'https://graph.facebook.com/debug_token?input_token=' . $test_app_token_id . '&access_token=' . $test_app_token_id,
@@ -265,7 +298,7 @@ class FTS_Instagram_Options_Page {
                             <?php esc_html_e( 'Access Token Required', 'feed-them-social' ); ?>
                         </div>
 
-                        <input type="text" name="fts_facebook_instagram_custom_api_token" class="feed-them-social-admin-input" id="fts_facebook_instagram_custom_api_token" value="<?php echo esc_attr( get_option( 'fts_facebook_instagram_custom_api_token' ) ); ?>"/>
+                        <input type="text" name="fts_facebook_instagram_custom_api_token" class="feed-them-social-admin-input" id="fts_facebook_instagram_custom_api_token" data-token="<?php echo $check_biz_encrypted ?>" value="<?php echo $check_biz_token_value ?>" />
                         <div class="clear"></div>
 
                         <input type="text" hidden name="fts_facebook_instagram_custom_api_token_user_name" class="feed-them-social-admin-input" id="fts_facebook_instagram_custom_api_token_user_name" value="<?php echo esc_attr( get_option( 'fts_facebook_instagram_custom_api_token_user_name' ) ); ?>"/>
@@ -273,14 +306,15 @@ class FTS_Instagram_Options_Page {
 
                         <div class="clear"></div>
                         <?php
-                        if ( ! empty( $test_app_token_response ) && ! empty( $test_app_token_id ) ) {
+                        if ( ! empty( $test_app_token_response ) && ! empty( $test_app_token_id_biz ) ) {
+
                             if ( isset( $test_app_token_response->data->is_valid ) || '(#100) You must provide an app access token, or a user access token that is an owner or developer of the app' === $test_app_token_response->error->message ) {
                                 $fb_id   = get_option( 'fts_facebook_instagram_custom_api_token_user_id' );
                                 $fb_name = get_option( 'fts_facebook_instagram_custom_api_token_user_name' );
                                 echo '<div class="fts-successful-api-token fts-special-working-wrap">';
 
-                                if ( ! empty( $fb_id ) && ! empty( $fb_name ) && ! empty( $test_app_token_id ) ) {
-                                    echo '<a href="' . esc_url( 'https://www.facebook.com/' . get_option( 'fts_facebook_instagram_custom_api_token_user_id' ) ) . '" target="_blank"><img border="0" height="50" width="50" class="fts-fb-page-thumb" src="' . get_option( 'fts_facebook_instagram_custom_api_token_profile_image' ) . '"/></a><h3><a href="' . esc_url( 'https://www.facebook.com/' . get_option( 'fts_facebook_custom_api_token_user_id' ) ) . '" target="_blank">' . wp_kses(
+                                if ( ! empty( $fb_id ) && ! empty( $fb_name ) && ! empty( $test_app_token_id_biz ) ) {
+                                    echo '<h3><a href="' . esc_url( 'https://www.facebook.com/' . get_option( 'fts_facebook_custom_api_token_user_id' ) ) . '" target="_blank">' . wp_kses(
                                             $fb_name,
                                             array(
                                                 'span' => array(
@@ -350,10 +384,6 @@ class FTS_Instagram_Options_Page {
                     <div class="clear"></div>
                 </div>
                 <!--/fts-facebook-feed-styles-input-wrap-->
-
-
-
-
 
                 <div class="feed-them-social-admin-input-wrap">
                     <div class="fts-title-description-settings-page">
