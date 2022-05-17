@@ -602,8 +602,8 @@ class Facebook_Additional_Options {
 					'option_type'      => 'select',
 					'label'            => esc_html__( 'Page Title Tag', 'feed_them_social' ),
 					'type'             => 'text',
-					'id'               => 'fb_title_htag',
-					'name'             => 'fb_title_htag',
+					'id'               => 'facebook_title_htag',
+					'name'             => 'facebook_title_htag',
 					'default_value'    => 'h1',
 					'options'          => array(
 						array(
@@ -639,8 +639,8 @@ class Facebook_Additional_Options {
 					'option_type'      => 'input',
 					'label'            => esc_html__( 'Page Title Size', 'feed_them_social' ),
 					'type'             => 'text',
-					'id'               => 'fb_title_htag_size',
-					'name'             => 'fb_title_htag_size',
+					'id'               => 'facebook_title_htag_size',
+					'name'             => 'facebook_title_htag_size',
 					'placeholder'      => '16px',
 					'default_value'    => '',
 				),
@@ -677,8 +677,8 @@ class Facebook_Additional_Options {
 					'option_type'      => 'select',
 					'label'            => esc_html__( 'Hide Images in Posts', 'feed_them_social' ),
 					'type'             => 'text',
-					'id'               => 'fb_hide_images_in_posts',
-					'name'             => 'fb_hide_images_in_posts',
+					'id'               => 'facebook_hide_images_in_posts',
+					'name'             => 'facebook_hide_images_in_posts',
 					'default_value'    => 'no',
 					'options'          => array(
 						array(
@@ -698,8 +698,8 @@ class Facebook_Additional_Options {
 					'option_type'      => 'input',
 					'label'            => esc_html__( 'Max-width for Images & Videos', 'feed_them_social' ),
 					'type'             => 'text',
-					'id'               => 'fb_max_image_width',
-					'name'             => 'fb_max_image_width',
+					'id'               => 'facebook_max_image_width',
+					'name'             => 'facebook_max_image_width',
 					'placeholder'      => '500px',
 					'default_value'    => '',
 				),

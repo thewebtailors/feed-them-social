@@ -372,17 +372,17 @@ class Facebook_Feed {
 			}
 			if ( 'reviews' !== $saved_feed_options['facebook_page_feed_type'] ) {
 
-				$fb_title_htag = get_option( 'fb_title_htag' ) ? get_option( 'fb_title_htag' ) : 'h1';
+				$fb_title_htag = $saved_feed_options['facebook_title_htag'] ?? 'h1';
 
 				if ( is_plugin_active( 'feed-them-premium/feed-them-premium.php' ) ) {
 					// echo our Facebook Page Title or About Text. Commented out the group description because in the future we will be adding the about description.
-					$fb_title_htag_size = get_option( 'fb_title_htag_size' ) ? 'font-size:' . get_option( 'fb_title_htag_size' ) . ';' : '';
+					$fb_title_htag_size = $saved_feed_options['facebook_title_htag_size'] ? 'font-size:' . $saved_feed_options['facebook_title_htag_size'] . ';' : '';
 					$fts_align_title    = isset( $saved_feed_options['facebook_page_title_align']) && '' !== $saved_feed_options['facebook_page_title_align']? 'style=text-align:' . $saved_feed_options['facebook_page_title_align']. ';' . $fb_title_htag_size . '' : $fb_title_htag_size;
 					echo isset( $saved_feed_options['facebook_page_title'] ) && 'no' !== $saved_feed_options['facebook_page_title'] ? '<' . esc_html( $fb_title_htag ) . ' ' . esc_attr( $fts_align_title ) . '><a href="' . esc_url( $fts_view_fb_link ) . '" target="_blank" rel="noreferrer">' . esc_html( $page_data->name ) . '</a></' . esc_html( $fb_title_htag ) . '>' : '';
 
 				} else {
 					// echo our Facebook Page Title or About Text. Commented out the group description because in the future we will be adding the about description.
-					$fb_title_htag_size = get_option( 'fb_title_htag_size' ) ? 'style=font-size:' . get_option( 'fb_title_htag_size' ) . ';' : '';
+					$fb_title_htag_size = $saved_feed_options['facebook_title_htag_size'] ? 'style=font-size:' . $saved_feed_options['facebook_title_htag_size'] . ';' : '';
 					echo '<' . esc_html( $fb_title_htag ) . ' ' . esc_attr( $fb_title_htag_size ) . '><a href="' . esc_url( $fts_view_fb_link ) . '" target="_blank" rel="noreferrer">' . esc_html( $page_data->name ) . '</a></' . esc_html( $fb_title_htag ) . '>';
 				}
 				// Description.
@@ -608,7 +608,7 @@ style="margin:' . ( isset( $saved_feed_options['slider_margin'] ) && '' !== $sav
 			// This is the method to skip empty posts or posts that are simply about changing settings or other non important post types.
 			if ( false !== strpos( $fb_story, 'updated their website address' ) ||  'profile_media' === $facebook_post_type && false !== strpos( $fb_story, 'updated their profile picture' ) || 'cover_photo' === $facebook_post_type && false !== strpos( $fb_story, 'updated their cover photo' ) || 'status' === $facebook_post_type && empty( $fb_message ) && empty( $fb_story ) || 'event' === $facebook_post_type || 'event' === $facebook_post_type && false !== strpos( $fb_story, 'shared their event' ) || 'status' === $facebook_post_type && false !== strpos( $fb_story, 'changed the name of the event to' ) || 'status' === $facebook_post_type && false !== strpos( $fb_story, 'changed the privacy setting' ) || 'status' === $facebook_post_type && false !== strpos( $fb_story, 'an admin of the group' ) || 'status' === $facebook_post_type && false !== strpos( $fb_story, 'created the group' ) || 'status' === $facebook_post_type && false !== strpos( $fb_story, 'added an event' ) || 'event' === $facebook_post_type && false !== strpos( $fb_story, 'added an event' ) ) {
 			} else {
-				// define type note also affects load more fucntion call.
+				// define type note also affects load more function call.
 				if ( ! $facebook_post_type && 'album_photos' === $saved_feed_options['facebook_page_feed_type'] ) {
 					$facebook_post_type = 'photo';
 				}
@@ -990,8 +990,7 @@ style="margin:' . ( isset( $saved_feed_options['slider_margin'] ) && '' !== $sav
 					$mulit_data['ratings_data'] = esc_url_raw( 'https://graph.facebook.com/' . $saved_feed_options['fts_facebook_custom_api_token_user_id'] . '/?fields=overall_star_rating,rating_count&access_token=' . $saved_feed_options['fts_facebook_custom_api_token'] . '' );
 
 				} else {
-					return 'Please Purchase and Activate the Feed Them Social Reviews plugin.';
-					exit;
+					return esc_html( 'Please Purchase and Activate the Feed Them Social Reviews plugin.', 'feed-them-social' );
 				}
 			} else {
 				$mulit_data = array( 'page_data' => 'https://graph.facebook.com/' . $saved_feed_options['fts_facebook_custom_api_token_user_id'] . '?fields=feed,id,name,description&access_token=' . $saved_feed_options['fts_facebook_custom_api_token'] . $language . '' );
@@ -1093,6 +1092,7 @@ style="margin:' . ( isset( $saved_feed_options['slider_margin'] ) && '' !== $sav
 
 				$post_data->id = $post_data->id ?? '';
 
+				// Skip Post if Set Zero.
 				if ( $set_zero === $saved_feed_options['facebook_page_post_count'] ) {
 					break;
 				}
@@ -1114,7 +1114,7 @@ style="margin:' . ( isset( $saved_feed_options['slider_margin'] ) && '' !== $sav
 					$fb_post_array[ $post_data_key . '_video' ] = 'https://graph.facebook.com/' . $post_data_key;
 				}
 				// Photo.
-				$fb_album_cover = isset( $post_data->cover_photo->id ) ? $post_data->cover_photo->id : '';
+				$fb_album_cover = $post_data->cover_photo->id ?? '';
 				if ( 'albums' === $saved_feed_options['facebook_page_feed_type'] && ! $fb_album_cover ) {
 					unset( $post_data );
 					continue;
@@ -1183,8 +1183,6 @@ style="margin:' . ( isset( $saved_feed_options['slider_margin'] ) && '' !== $sav
 			$set_zero               = 0;
 			foreach ( $feed_data->data as $post_data ) {
 
-				$post_data->id = $post_data->id ?? '';
-
 				if ( $set_zero === $saved_feed_options['facebook_page_post_count'] ) {
 					break;
 				}
@@ -1220,7 +1218,6 @@ style="margin:' . ( isset( $saved_feed_options['slider_margin'] ) && '' !== $sav
 	 * FB Social Button Placement
 	 *
 	 * @param array $saved_feed_options The feed options saved in the CPT.
-	 * @param string $saved_feed_options['fts_facebook_custom_api_token'] The Access Token.
 	 * @param string $share_loc Language.
 	 * @return string|void
 	 * @since 2.0.1

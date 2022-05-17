@@ -690,10 +690,10 @@ class Settings_Functions {
 				$value = isset( $args['std'] ) ? $args['std'] : '';
 			}
 		} else	{
-			$value = isset( $args['std'] ) ? $args['std'] : '';
+			$value = $args['std'] ?? '';
 		}
 
-		$rows = isset( $args['size'] ) ? $args['size'] : 20;
+		$rows = $args['size'] ?? 20 ;
 
 		$class = $this->fts_sanitize_html_class( $args['field_class'] );
 
@@ -730,7 +730,7 @@ class Settings_Functions {
 		if ( $fts_option )	{
 			$value = $fts_option;
 		} else	{
-			$value = isset($args['std']) ? $args['std'] : '';
+			$value = $args['std'] ?? '';
 		}
 
 		$class = $this->fts_sanitize_html_class( $args['field_class'] );

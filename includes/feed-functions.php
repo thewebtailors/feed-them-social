@@ -636,7 +636,7 @@ class Feed_Functions {
 		$fb_reviews_overall_rating_text_color         = get_option( 'fb_reviews_overall_rating_text_color' );
 		$fb_reviews_overall_rating_background_padding = get_option( 'fb_reviews_overall_rating_background_padding' );
 
-		$fb_max_image_width = get_option( 'fb_max_image_width' );
+		$fb_max_image_width = get_option( 'facebook_max_image_width' );
 
 		$fb_events_title_color   = get_option( 'fb_events_title_color' );
 		$fb_events_title_size    = get_option( 'fb_events_title_size' );
