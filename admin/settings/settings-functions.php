@@ -36,7 +36,6 @@ class Settings_Functions {
 	 * @since 1.1.8
 	 */
 	public function add_actions_filters() {
-
         // Update Options Filter
 		add_filter( 'fts_update_option', array( $this, 'fts_update_option' ), 10, 2 );
 
@@ -144,7 +143,6 @@ class Settings_Functions {
 	 * @return	bool	True if updated, false if not.
 	 */
 	public function fts_delete_option( $key = '' ) {
-
 		// If no key, exit
 		if ( empty( $key ) ){
 			return false;
@@ -155,9 +153,8 @@ class Settings_Functions {
 
 		// Next let's try to update the value
 		if( isset( $options[ $key ] ) ) {
-
+            // Delete the option based on the key.
 			unset( $options[ $key ] );
-
 		}
 
 		$did_update = update_option( 'fts_settings', $options );
@@ -184,8 +181,7 @@ class Settings_Functions {
 
         // If no settings are found create an empty option in database.
 		if( empty( $settings ) ) {
-			$settings = array();
-			update_option( 'fts_settings', $settings );
+			update_option( 'fts_settings', array() );
 		}
 
 		return $settings;

@@ -47,8 +47,6 @@ class Facebook_Feed {
 		return ( $date_b - $date_a );
 	}
 
-
-
 	/**
 	 * Display Facebook
 	 *
@@ -166,7 +164,6 @@ class Facebook_Feed {
 				// }.
 				$set_zero = 0;
 				foreach ( $feed_data_check->data as $post_count ) {
-					
 					$fb_message         = $post_count->message ?? '';
 					$fb_story           = $post_count->story ?? '';
 					$facebook_post_type = $post_count->attachments->data[0]->type ?? '';
@@ -184,15 +181,8 @@ class Facebook_Feed {
 				}// END POST foreach.
 
 				// Result of the foreach loop above minus the empty posts and offset by those posts the actual number of posts entered is shown
-				// $saved_feed_options['facebook_page_post_count'] = $result;.
-				if ( ! empty( $fb_count_offset ) ) {
-					$set_zero              = $fb_count_offset;
-					$unset_count           = $saved_feed_options['facebook_page_post_count'] + $set_zero;
-					$saved_feed_options['facebook_page_post_count'] = $unset_count;
-				} else {
-					$unset_count           = $saved_feed_options['facebook_page_post_count'] + $set_zero;
-					$saved_feed_options['facebook_page_post_count'] = $unset_count;
-				}
+				$saved_feed_options['facebook_page_post_count'] = $saved_feed_options['facebook_page_post_count'] + $set_zero;
+
 
 				// SHOW THE $feed_data_check PRINT_R
 				/* echo '<pre>';
@@ -467,86 +457,90 @@ class Facebook_Feed {
 					// arrows_and_numbers_below_feed
 					// arrows_below_feed
 					// numbers_below_feed.
-					$fts_controls_bar_color  = ! empty( $saved_feed_options['slider_controls_bar_color'] ) ? $saved_feed_options['slider_controls_bar_color'] : '#000';
-					$fts_controls_text_color = ! empty( $saved_feed_options['slider_controls_text_color'] ) ? $saved_feed_options['slider_controls_text_color'] : '#ddd';
+					$fts_controls_bar_color  = $saved_feed_options['slider_controls_bar_color'] ?? '#000';
+					$fts_controls_text_color = $saved_feed_options['slider_controls_text_color'] ?? '#ddd';
 					if ( isset( $saved_feed_options['slider_controls_width'] ) && 'carousel' !== $saved_feed_options['scrollhorz_or_carousel']) {
 						$max_width_set = isset( $saved_feed_options['facebook_image_width'] ) && '' !== $saved_feed_options['facebook_image_width'] && 'carousel' !== $saved_feed_options['scrollhorz_or_carousel']? $saved_feed_options['facebook_image_width'] : '100%';
 					} else {
 						$max_width_set = isset( $saved_feed_options['slider_controls_width'] ) && '' !== $saved_feed_options['slider_controls_width'] && 'carousel' === $saved_feed_options['scrollhorz_or_carousel']? $saved_feed_options['slider_controls_width'] : '100%';
 					}
-					if (
-						isset( $saved_feed_options['slider_controls'] ) && 'dots_above_feed' === $saved_feed_options['slider_controls'] ||
-						isset( $saved_feed_options['slider_controls'] ) && 'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
-						isset( $saved_feed_options['slider_controls'] ) && 'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-						isset( $saved_feed_options['slider_controls'] ) && 'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-						isset( $saved_feed_options['slider_controls'] ) && 'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-						isset( $saved_feed_options['slider_controls'] ) && 'arrows_above_feed' === $saved_feed_options['slider_controls'] ||
-						isset( $saved_feed_options['slider_controls'] ) && 'numbers_above_feed' === $saved_feed_options['slider_controls']
-					) {
-
-						// Slider Dots Wrapper.
+					if( $saved_feed_options['slider_controls'] ){
 						if (
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls']
+							'dots_above_feed' === $saved_feed_options['slider_controls'] ||
+							'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
+							'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+							'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+							'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+							'arrows_above_feed' === $saved_feed_options['slider_controls'] ||
+							'numbers_above_feed' === $saved_feed_options['slider_controls']
 						) {
 
-							echo '<div class="fts-slider-icons-center fts-pager-option-dots-only-top" style="margin:auto; width:100%;max-width:' . esc_attr( $max_width_set . ';background:' . $fts_controls_bar_color . ';color:' . $fts_controls_text_color ) . '"><div class="fts-pager-option fts-custom-pager-' . esc_attr( $fts_dynamic_class_name ) . '"></div></div>';
+							// Slider Dots Wrapper.
+							if (
+								'dots_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls']
+							) {
+
+								echo '<div class="fts-slider-icons-center fts-pager-option-dots-only-top" style="margin:auto; width:100%;max-width:' . esc_attr( $max_width_set . ';background:' . $fts_controls_bar_color . ';color:' . $fts_controls_text_color ) . '"><div class="fts-pager-option fts-custom-pager-' . esc_attr( $fts_dynamic_class_name ) . '"></div></div>';
+							}
+
+							// Slider Arrow and Numbers Wrapper.
+							if (
+								'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'arrows_above_feed' === $saved_feed_options['slider_controls'] ||
+								'numbers_above_feed' === $saved_feed_options['slider_controls']
+							) {
+								echo '<div class="fts-slider-center" style="margin:auto; width:100%; max-width:' . esc_attr( $max_width_set . ';background:' . $fts_controls_bar_color . ';color:' . $fts_controls_text_color ) . '">';
+							}
+
+							// Previous Arrow.
+							if (
+								'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'arrows_above_feed' === $saved_feed_options['slider_controls']
+							) {
+								echo '<span class="fts-prevControl-icon fts-prevControl-' . esc_attr( $fts_dynamic_class_name ) . '"></span>';
+							}
+							// Numbers.
+							if (
+								'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls']
+							) {
+								echo '<span id="fts-custom-caption-' . esc_attr( $fts_dynamic_class_name ) . '" class="fts-custom-caption" ></span>';
+							}
+							// Next Arrow.
+							if (
+								'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'arrows_above_feed' === $saved_feed_options['slider_controls']
+							) {
+								echo '<span class="fts-nextControl-icon fts-nextControl-' . esc_attr( $fts_dynamic_class_name ) . '"></span>';
+							}
+
+							// Slider Arrow and Numbers Wrapper.
+							if (
+								'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
+								'arrows_above_feed' === $saved_feed_options['slider_controls'] ||
+								'numbers_above_feed' === $saved_feed_options['slider_controls']
+							) {
+								echo '</div>';
+							}
 						}
 
-						// Slider Arrow and Numbers Wrapper.
-						if (
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'arrows_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'numbers_above_feed' === $saved_feed_options['slider_controls']
-						) {
-							echo '<div class="fts-slider-center" style="margin:auto; width:100%; max-width:' . esc_attr( $max_width_set . ';background:' . $fts_controls_bar_color . ';color:' . $fts_controls_text_color ) . '">';
-						}
-
-						// Previous Arrow.
-						if (
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'arrows_above_feed' === $saved_feed_options['slider_controls']
-						) {
-							echo '<span class="fts-prevControl-icon fts-prevControl-' . esc_attr( $fts_dynamic_class_name ) . '"></span>';
-						}
-						// Numbers.
-						if (
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls']
-						) {
-							echo '<span id="fts-custom-caption-' . esc_attr( $fts_dynamic_class_name ) . '" class="fts-custom-caption" ></span>';
-						}
-						// Next Arrow.
-						if (
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'arrows_above_feed' === $saved_feed_options['slider_controls']
-						) {
-							echo '<span class="fts-nextControl-icon fts-nextControl-' . esc_attr( $fts_dynamic_class_name ) . '"></span>';
-						}
-
-						// Slider Arrow and Numbers Wrapper.
-						if (
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_and_arrows_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'dots_arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'arrows_and_numbers_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'arrows_above_feed' === $saved_feed_options['slider_controls'] ||
-							isset( $saved_feed_options['slider_controls'] ) && 'numbers_above_feed' === $saved_feed_options['slider_controls']
-						) {
-							echo '</div>';
-						}
 					}
+
 
 					echo '<div class="popup-gallery-fb fts-fb-slideshow fts-slicker-facebook-photos fts-slicker-facebook-albums ' . esc_attr( $fts_cycle_slideshow ) . ' ' . ( isset( $saved_feed_options['facebook_video_album'] ) && $saved_feed_options['facebook_video_album'] && 'yes' === $saved_feed_options['facebook_video_album'] ? 'popup-video-gallery-fb' : '' ) . ' ' . ( isset( $saved_feed_options['images_align'] ) && $saved_feed_options['images_align'] ? ' popup-video-gallery-align-' . esc_attr( $saved_feed_options['images_align'] ) : '' ) . ' popup-gallery-fb ' . esc_attr( $fts_dynamic_class_name ) . '"
 
