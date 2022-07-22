@@ -430,7 +430,7 @@ class feed_them_social_functions {
 	 */
 	public function fts_fb_page_token_func() {
 
-        // SRL 7-22-22: Makes sure facebook url is position 0 otherwise return.
+        // SRL 7-22-22: Makes sure facebook url matches up to offset 22 otherwise return.
         if( isset( $_GET['next_location_url'] ) && strpos( $_GET['next_location_url'], 'https://graph.facebook', 22 ) ){
             return false;
         }
