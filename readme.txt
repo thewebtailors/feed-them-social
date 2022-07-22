@@ -3,7 +3,7 @@ Contributors: slickremix, slickchris
 Tags: Facebook, Instagram, Twitter, YouTube, Feed
 Requires at least: 3.6.0
 Tested up to: 6.0.1
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 License: GPLv2 or later
 
 Display a Custom Facebook feed, Instagram feed, Twitter feed, and YouTube feed on pages, posts or widgets.
@@ -72,6 +72,9 @@ Feed Them Social was Developed By SlickRemix --> [https://www.slickremix.com/](h
   * Log into WordPress dashboard then click **Plugins** > **Add new** > Then under the title "Install Plugins" click **Upload** > **choose the zip** > **Activate the plugin!**
 
 == Changelog ==
+= Version 3.0.2 Friday, July 22th, 2022 =
+ * FIX: XSS Vulnerability: fts_fb_page_token_func
+
 = Version 3.0.1 Wednesday, July 20th, 2022 =
  * FIX: Facebook Options Page: notice if $test_fb_app_token_response->error was empty.
  * FIX: XSS Vulnerability: fts_fb_page_token_func, fts_instagram_token_ajax, feed_them_instagram_save_token

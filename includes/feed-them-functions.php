@@ -430,7 +430,8 @@ class feed_them_social_functions {
 	 */
 	public function fts_fb_page_token_func() {
 
-        if( !empty( $_GET['next_location_url'] ) && false === strpos( $_GET['next_location_url'], 'https://graph.facebook' ) ){
+        // SRL 7-22-22: Makes sure facebook url is position 0 otherwise return.
+        if( isset( $_GET['next_location_url'] ) && strpos( $_GET['next_location_url'], 'https://graph.facebook', 22 ) ){
             return false;
         }
 
@@ -462,7 +463,9 @@ class feed_them_social_functions {
             // Test. print_r( $test_fb_app_token_response );
 
             $_REQUEST['next_url']       = isset( $test_fb_app_token_response->paging->next ) ? esc_url_raw( $test_fb_app_token_response->paging->next ) : '';
-        } else {
+        }
+        else {
+
             $fb_token_response          = isset( $_REQUEST['next_location_url'] ) ? wp_remote_fopen( esc_url_raw( $_REQUEST['next_location_url'] ) ) : '';
             $test_fb_app_token_response = json_decode( $fb_token_response );
         }
