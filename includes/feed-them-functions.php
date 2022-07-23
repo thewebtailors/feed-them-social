@@ -430,9 +430,10 @@ class feed_them_social_functions {
 	 */
 	public function fts_fb_page_token_func() {
 
-        // SRL 7-22-22: Makes sure facebook url matches up to offset 22 otherwise return, also make sure the url actually contains the url.
-        if( isset( $_GET['next_location_url'] ) && strpos( $_GET['next_location_url'], 'https://graph.facebook', 22 ) ||
-            isset( $_GET['next_location_url'] ) && false === strpos( $_GET['next_location_url'], 'https://graph.facebook' ) ){
+        // SRL 7-22-22: Makes sure facebook url is at the start of string otherwise return, also make sure the url actually contains the url.
+        // Using offset 22 as code hints suggest is not the solution because we want to make sure the fb url is at the start (0)
+        if( isset( $_GET['next_location_url'] ) && 0 !== strpos( $_GET['next_location_url'], 'https://graph.facebook.com/' ) ||
+            isset( $_GET['next_location_url'] ) && false === strpos( $_GET['next_location_url'], 'https://graph.facebook.com/' ) ){
             return false;
         }
 
