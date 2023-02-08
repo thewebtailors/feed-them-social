@@ -204,11 +204,13 @@ class FTS_Settings_Page {
 									?>
 
 									<form method="post" action="?page=feed-them-settings-page&cache=clearcache&tab=global_options">
+										<?php wp_nonce_field( 'fts_clear_cache' );?>
 										<input class="feed-them-social-admin-submit-btn" type="submit" value="<?php echo esc_html__( 'Clear All FTS Feeds Cache', 'feed-them-social' ); ?>"/>
 									</form>
 
                                     <form style="display: none" method="post" action="?page=feed-them-settings-page&cache=clearftsadmincache&tab=global_options">
-                                        <input class="feed-them-social-admin-submit-btn" type="submit" value="<?php echo esc_html__( 'Clear All FTS Admin Options Cache', 'feed-them-social' ); ?>"/>
+										<?php wp_nonce_field( 'fts_clear_admin_cache' );?>
+										<input class="feed-them-social-admin-submit-btn" type="submit" value="<?php echo esc_html__( 'Clear All FTS Admin Options Cache', 'feed-them-social' ); ?>"/>
                                     </form>
 								</div><!--/feed-them-clear-cache-->
 								<!-- custom option for padding -->

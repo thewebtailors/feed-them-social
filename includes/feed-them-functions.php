@@ -3178,6 +3178,11 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
 	 * @since 1.9.6
 	 */
 	public function feed_them_clear_admin_cache() {
+
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || false === wp_verify_nonce( $_REQUEST['_wpnonce'], 'fts_clear_admin_cache' ) ) {
+			wp_die( __( 'Forbidden', 'feed-them-social' ), 403 );
+		}
+
 		global $wpdb;
 		// Clear UnExpired Timed Cache!
 		$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", 'fts_facebook_%' ) );
@@ -3212,6 +3217,11 @@ if ( ! empty( $youtube_loadmore_text_color ) ) {
      * @since 1.9.6
      */
     public function feed_them_clear_cache() {
+
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || false === wp_verify_nonce( $_REQUEST['_wpnonce'], 'fts_clear_cache' ) ) {
+			wp_die( __( 'Forbidden', 'feed-them-social' ), 403 );
+		}
+
         global $wpdb;
         // Clear UnExpired Timed Cache!
         $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_fts_t_%' ) );
